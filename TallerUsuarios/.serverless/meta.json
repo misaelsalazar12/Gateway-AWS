@@ -1,0 +1,3830 @@
+{
+  "C:\\Users\\misae\\Documents\\AmazonLite\\TallerUsuarios\\serverless.yml": {
+    "versionFramework": "4.46.0",
+    "servicePath": "C:\\Users\\misae\\Documents\\AmazonLite\\TallerUsuarios\\serverless.yml",
+    "serviceConfigFileName": "serverless.yml",
+    "service": {
+      "org": "misaelsalazar980",
+      "service": "tallerusuarios",
+      "frameworkVersion": "4",
+      "provider": {
+        "name": "aws",
+        "runtime": "nodejs22.x",
+        "stage": "local",
+        "region": "us-east-1",
+        "environment": {
+          "STAGE": "local",
+          "USERS_TABLE": "taller-local-users",
+          "JWT_SECRET": "<REDACTED>",
+          "CORS_ORIGINS": "*"
+        },
+        "apiGateway": {
+          "restApiId": {
+            "Fn::ImportValue": "MainRestApiId"
+          },
+          "restApiRootResourceId": {
+            "Fn::ImportValue": "MainRestApiRootResourceId"
+          }
+        },
+        "iamRoleStatements": [
+          {
+            "Effect": "Allow",
+            "Action": [
+              "dynamodb:PutItem",
+              "dynamodb:GetItem",
+              "dynamodb:UpdateItem",
+              "dynamodb:DeleteItem",
+              "dynamodb:Query",
+              "dynamodb:Scan"
+            ],
+            "Resource": [
+              {
+                "Fn::GetAtt": [
+                  "UsersTable",
+                  "Arn"
+                ]
+              },
+              {
+                "Fn::Join": [
+                  "/",
+                  [
+                    {
+                      "Fn::GetAtt": [
+                        "UsersTable",
+                        "Arn"
+                      ]
+                    },
+                    "index/*"
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "versionFunctions": true,
+        "compiledCloudFormationTemplate": {
+          "AWSTemplateFormatVersion": "2010-09-09",
+          "Description": "The AWS CloudFormation template for this Serverless application",
+          "Resources": {
+            "RegisterLogGroup": {
+              "Type": "AWS::Logs::LogGroup",
+              "Properties": {
+                "LogGroupName": "/aws/lambda/taller-local-Users-Register"
+              }
+            },
+            "LoginLogGroup": {
+              "Type": "AWS::Logs::LogGroup",
+              "Properties": {
+                "LogGroupName": "/aws/lambda/taller-local-Users-Login"
+              }
+            },
+            "GetUserLogGroup": {
+              "Type": "AWS::Logs::LogGroup",
+              "Properties": {
+                "LogGroupName": "/aws/lambda/taller-local-Users-GetUser"
+              }
+            },
+            "UpdateUserLogGroup": {
+              "Type": "AWS::Logs::LogGroup",
+              "Properties": {
+                "LogGroupName": "/aws/lambda/taller-local-Users-Update"
+              }
+            },
+            "DeleteUserLogGroup": {
+              "Type": "AWS::Logs::LogGroup",
+              "Properties": {
+                "LogGroupName": "/aws/lambda/taller-local-Users-Delete"
+              }
+            },
+            "IamRoleLambdaExecution": {
+              "Type": "AWS::IAM::Role",
+              "Properties": {
+                "AssumeRolePolicyDocument": {
+                  "Version": "2012-10-17",
+                  "Statement": [
+                    {
+                      "Effect": "Allow",
+                      "Principal": {
+                        "Service": [
+                          "lambda.amazonaws.com"
+                        ]
+                      },
+                      "Action": [
+                        "sts:AssumeRole"
+                      ]
+                    }
+                  ]
+                },
+                "Policies": [
+                  {
+                    "PolicyName": {
+                      "Fn::Join": [
+                        "-",
+                        [
+                          "tallerusuarios",
+                          "local",
+                          "lambda"
+                        ]
+                      ]
+                    },
+                    "PolicyDocument": {
+                      "Version": "2012-10-17",
+                      "Statement": [
+                        {
+                          "Effect": "Allow",
+                          "Action": [
+                            "logs:CreateLogStream",
+                            "logs:CreateLogGroup",
+                            "logs:TagResource"
+                          ],
+                          "Resource": [
+                            {
+                              "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-local-Users-Register:*"
+                            },
+                            {
+                              "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-local-Users-Login:*"
+                            },
+                            {
+                              "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-local-Users-GetUser:*"
+                            },
+                            {
+                              "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-local-Users-Update:*"
+                            },
+                            {
+                              "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-local-Users-Delete:*"
+                            }
+                          ]
+                        },
+                        {
+                          "Effect": "Allow",
+                          "Action": [
+                            "logs:PutLogEvents"
+                          ],
+                          "Resource": [
+                            {
+                              "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-local-Users-Register:*:*"
+                            },
+                            {
+                              "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-local-Users-Login:*:*"
+                            },
+                            {
+                              "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-local-Users-GetUser:*:*"
+                            },
+                            {
+                              "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-local-Users-Update:*:*"
+                            },
+                            {
+                              "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-local-Users-Delete:*:*"
+                            }
+                          ]
+                        },
+                        {
+                          "Effect": "Allow",
+                          "Action": [
+                            "dynamodb:PutItem",
+                            "dynamodb:GetItem",
+                            "dynamodb:UpdateItem",
+                            "dynamodb:DeleteItem",
+                            "dynamodb:Query",
+                            "dynamodb:Scan"
+                          ],
+                          "Resource": [
+                            {
+                              "Fn::GetAtt": [
+                                "UsersTable",
+                                "Arn"
+                              ]
+                            },
+                            {
+                              "Fn::Join": [
+                                "/",
+                                [
+                                  {
+                                    "Fn::GetAtt": [
+                                      "UsersTable",
+                                      "Arn"
+                                    ]
+                                  },
+                                  "index/*"
+                                ]
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "Path": "/",
+                "RoleName": {
+                  "Fn::Join": [
+                    "-",
+                    [
+                      "tallerusuarios",
+                      "local",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      "lambdaRole"
+                    ]
+                  ]
+                }
+              }
+            },
+            "RegisterLambdaFunction": {
+              "Type": "AWS::Lambda::Function",
+              "Properties": {
+                "Code": {
+                  "S3Bucket": "serverless-framework-deployments-us-east-1-2bbae8e1-e763",
+                  "S3Key": "serverless/tallerusuarios/local/1794101543117-2026-11-08T01:32:23.117Z/tallerusuarios.zip"
+                },
+                "Handler": "src/handlers/register.handler",
+                "Runtime": "nodejs22.x",
+                "FunctionName": "taller-local-Users-Register",
+                "MemorySize": 1024,
+                "Timeout": 6,
+                "Environment": {
+                  "Variables": {
+                    "STAGE": "local",
+                    "USERS_TABLE": "taller-local-users",
+                    "JWT_SECRET": "<REDACTED>",
+                    "CORS_ORIGINS": "*",
+                    "NODE_OPTIONS": "--enable-source-maps"
+                  }
+                },
+                "Role": {
+                  "Fn::GetAtt": [
+                    "IamRoleLambdaExecution",
+                    "Arn"
+                  ]
+                }
+              },
+              "DependsOn": [
+                "RegisterLogGroup"
+              ]
+            },
+            "LoginLambdaFunction": {
+              "Type": "AWS::Lambda::Function",
+              "Properties": {
+                "Code": {
+                  "S3Bucket": "serverless-framework-deployments-us-east-1-2bbae8e1-e763",
+                  "S3Key": "serverless/tallerusuarios/local/1794101543117-2026-11-08T01:32:23.117Z/tallerusuarios.zip"
+                },
+                "Handler": "src/handlers/login.handler",
+                "Runtime": "nodejs22.x",
+                "FunctionName": "taller-local-Users-Login",
+                "MemorySize": 1024,
+                "Timeout": 6,
+                "Environment": {
+                  "Variables": {
+                    "STAGE": "local",
+                    "USERS_TABLE": "taller-local-users",
+                    "JWT_SECRET": "<REDACTED>",
+                    "CORS_ORIGINS": "*",
+                    "NODE_OPTIONS": "--enable-source-maps"
+                  }
+                },
+                "Role": {
+                  "Fn::GetAtt": [
+                    "IamRoleLambdaExecution",
+                    "Arn"
+                  ]
+                }
+              },
+              "DependsOn": [
+                "LoginLogGroup"
+              ]
+            },
+            "GetUserLambdaFunction": {
+              "Type": "AWS::Lambda::Function",
+              "Properties": {
+                "Code": {
+                  "S3Bucket": "serverless-framework-deployments-us-east-1-2bbae8e1-e763",
+                  "S3Key": "serverless/tallerusuarios/local/1794101543117-2026-11-08T01:32:23.117Z/tallerusuarios.zip"
+                },
+                "Handler": "src/handlers/getUser.handler",
+                "Runtime": "nodejs22.x",
+                "FunctionName": "taller-local-Users-GetUser",
+                "MemorySize": 1024,
+                "Timeout": 6,
+                "Environment": {
+                  "Variables": {
+                    "STAGE": "local",
+                    "USERS_TABLE": "taller-local-users",
+                    "JWT_SECRET": "<REDACTED>",
+                    "CORS_ORIGINS": "*",
+                    "NODE_OPTIONS": "--enable-source-maps"
+                  }
+                },
+                "Role": {
+                  "Fn::GetAtt": [
+                    "IamRoleLambdaExecution",
+                    "Arn"
+                  ]
+                }
+              },
+              "DependsOn": [
+                "GetUserLogGroup"
+              ]
+            },
+            "UpdateUserLambdaFunction": {
+              "Type": "AWS::Lambda::Function",
+              "Properties": {
+                "Code": {
+                  "S3Bucket": "serverless-framework-deployments-us-east-1-2bbae8e1-e763",
+                  "S3Key": "serverless/tallerusuarios/local/1794101543117-2026-11-08T01:32:23.117Z/tallerusuarios.zip"
+                },
+                "Handler": "src/handlers/updateUser.handler",
+                "Runtime": "nodejs22.x",
+                "FunctionName": "taller-local-Users-Update",
+                "MemorySize": 1024,
+                "Timeout": 6,
+                "Environment": {
+                  "Variables": {
+                    "STAGE": "local",
+                    "USERS_TABLE": "taller-local-users",
+                    "JWT_SECRET": "<REDACTED>",
+                    "CORS_ORIGINS": "*",
+                    "NODE_OPTIONS": "--enable-source-maps"
+                  }
+                },
+                "Role": {
+                  "Fn::GetAtt": [
+                    "IamRoleLambdaExecution",
+                    "Arn"
+                  ]
+                }
+              },
+              "DependsOn": [
+                "UpdateUserLogGroup"
+              ]
+            },
+            "DeleteUserLambdaFunction": {
+              "Type": "AWS::Lambda::Function",
+              "Properties": {
+                "Code": {
+                  "S3Bucket": "serverless-framework-deployments-us-east-1-2bbae8e1-e763",
+                  "S3Key": "serverless/tallerusuarios/local/1794101543117-2026-11-08T01:32:23.117Z/tallerusuarios.zip"
+                },
+                "Handler": "src/handlers/deleteUser.handler",
+                "Runtime": "nodejs22.x",
+                "FunctionName": "taller-local-Users-Delete",
+                "MemorySize": 1024,
+                "Timeout": 6,
+                "Environment": {
+                  "Variables": {
+                    "STAGE": "local",
+                    "USERS_TABLE": "taller-local-users",
+                    "JWT_SECRET": "<REDACTED>",
+                    "CORS_ORIGINS": "*",
+                    "NODE_OPTIONS": "--enable-source-maps"
+                  }
+                },
+                "Role": {
+                  "Fn::GetAtt": [
+                    "IamRoleLambdaExecution",
+                    "Arn"
+                  ]
+                }
+              },
+              "DependsOn": [
+                "DeleteUserLogGroup"
+              ]
+            },
+            "RegisterLambdaVersionLPd9XHAMt31q756J62wkmlBtvW7toqZVRppXIFDZ78": {
+              "Type": "AWS::Lambda::Version",
+              "DeletionPolicy": "Retain",
+              "Properties": {
+                "FunctionName": {
+                  "Ref": "RegisterLambdaFunction"
+                },
+                "CodeSha256": "XIoxzqC/XxSRGfR6Uoa5RxmV+cVJ46EU6XI0JPDYTVw="
+              }
+            },
+            "LoginLambdaVersionrYMyMohWbZx47kAluCPzYUucMAmTqHDRyVcZGEAI": {
+              "Type": "AWS::Lambda::Version",
+              "DeletionPolicy": "Retain",
+              "Properties": {
+                "FunctionName": {
+                  "Ref": "LoginLambdaFunction"
+                },
+                "CodeSha256": "XIoxzqC/XxSRGfR6Uoa5RxmV+cVJ46EU6XI0JPDYTVw="
+              }
+            },
+            "GetUserLambdaVersionbUsavsSAl6DrH84xGlBq5WGjP82TwkwkdUfvSnCWXY": {
+              "Type": "AWS::Lambda::Version",
+              "DeletionPolicy": "Retain",
+              "Properties": {
+                "FunctionName": {
+                  "Ref": "GetUserLambdaFunction"
+                },
+                "CodeSha256": "XIoxzqC/XxSRGfR6Uoa5RxmV+cVJ46EU6XI0JPDYTVw="
+              }
+            },
+            "UpdateUserLambdaVersionF3tWEMP6hijeca1UpKtN2F8FGz0Tr8HeGTwYs6vn9c": {
+              "Type": "AWS::Lambda::Version",
+              "DeletionPolicy": "Retain",
+              "Properties": {
+                "FunctionName": {
+                  "Ref": "UpdateUserLambdaFunction"
+                },
+                "CodeSha256": "XIoxzqC/XxSRGfR6Uoa5RxmV+cVJ46EU6XI0JPDYTVw="
+              }
+            },
+            "DeleteUserLambdaVersionegAVWlTm7pbkGxAqyE3i1sUks8Eas6zhB1xdNFnz4c": {
+              "Type": "AWS::Lambda::Version",
+              "DeletionPolicy": "Retain",
+              "Properties": {
+                "FunctionName": {
+                  "Ref": "DeleteUserLambdaFunction"
+                },
+                "CodeSha256": "XIoxzqC/XxSRGfR6Uoa5RxmV+cVJ46EU6XI0JPDYTVw="
+              }
+            },
+            "ApiGatewayResourceUsers": {
+              "Type": "AWS::ApiGateway::Resource",
+              "Properties": {
+                "ParentId": {
+                  "Fn::ImportValue": "MainRestApiRootResourceId"
+                },
+                "PathPart": "users",
+                "RestApiId": {
+                  "Fn::ImportValue": "MainRestApiId"
+                }
+              }
+            },
+            "ApiGatewayResourceUsersRegister": {
+              "Type": "AWS::ApiGateway::Resource",
+              "Properties": {
+                "ParentId": {
+                  "Ref": "ApiGatewayResourceUsers"
+                },
+                "PathPart": "register",
+                "RestApiId": {
+                  "Fn::ImportValue": "MainRestApiId"
+                }
+              }
+            },
+            "ApiGatewayResourceUsersLogin": {
+              "Type": "AWS::ApiGateway::Resource",
+              "Properties": {
+                "ParentId": {
+                  "Ref": "ApiGatewayResourceUsers"
+                },
+                "PathPart": "login",
+                "RestApiId": {
+                  "Fn::ImportValue": "MainRestApiId"
+                }
+              }
+            },
+            "ApiGatewayResourceUsersUseridVar": {
+              "Type": "AWS::ApiGateway::Resource",
+              "Properties": {
+                "ParentId": {
+                  "Ref": "ApiGatewayResourceUsers"
+                },
+                "PathPart": "{userId}",
+                "RestApiId": {
+                  "Fn::ImportValue": "MainRestApiId"
+                }
+              }
+            },
+            "ApiGatewayMethodUsersRegisterOptions": {
+              "Type": "AWS::ApiGateway::Method",
+              "Properties": {
+                "AuthorizationType": "NONE",
+                "HttpMethod": "OPTIONS",
+                "MethodResponses": [
+                  {
+                    "StatusCode": "200",
+                    "ResponseParameters": {
+                      "method.response.header.Access-Control-Allow-Origin": true,
+                      "method.response.header.Access-Control-Allow-Headers": true,
+                      "method.response.header.Access-Control-Allow-Methods": true
+                    },
+                    "ResponseModels": {}
+                  }
+                ],
+                "RequestParameters": {},
+                "Integration": {
+                  "Type": "MOCK",
+                  "RequestTemplates": {
+                    "application/json": "{statusCode:200}"
+                  },
+                  "ContentHandling": "CONVERT_TO_TEXT",
+                  "IntegrationResponses": [
+                    {
+                      "StatusCode": "200",
+                      "ResponseParameters": {
+                        "method.response.header.Access-Control-Allow-Origin": "'*'",
+                        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Api-Key,X-Amz-Date,X-Amz-Security-Token'",
+                        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,POST'"
+                      },
+                      "ResponseTemplates": {
+                        "application/json": ""
+                      }
+                    }
+                  ]
+                },
+                "ResourceId": {
+                  "Ref": "ApiGatewayResourceUsersRegister"
+                },
+                "RestApiId": {
+                  "Fn::ImportValue": "MainRestApiId"
+                }
+              }
+            },
+            "ApiGatewayMethodUsersLoginOptions": {
+              "Type": "AWS::ApiGateway::Method",
+              "Properties": {
+                "AuthorizationType": "NONE",
+                "HttpMethod": "OPTIONS",
+                "MethodResponses": [
+                  {
+                    "StatusCode": "200",
+                    "ResponseParameters": {
+                      "method.response.header.Access-Control-Allow-Origin": true,
+                      "method.response.header.Access-Control-Allow-Headers": true,
+                      "method.response.header.Access-Control-Allow-Methods": true
+                    },
+                    "ResponseModels": {}
+                  }
+                ],
+                "RequestParameters": {},
+                "Integration": {
+                  "Type": "MOCK",
+                  "RequestTemplates": {
+                    "application/json": "{statusCode:200}"
+                  },
+                  "ContentHandling": "CONVERT_TO_TEXT",
+                  "IntegrationResponses": [
+                    {
+                      "StatusCode": "200",
+                      "ResponseParameters": {
+                        "method.response.header.Access-Control-Allow-Origin": "'*'",
+                        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Api-Key,X-Amz-Date,X-Amz-Security-Token'",
+                        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,POST'"
+                      },
+                      "ResponseTemplates": {
+                        "application/json": ""
+                      }
+                    }
+                  ]
+                },
+                "ResourceId": {
+                  "Ref": "ApiGatewayResourceUsersLogin"
+                },
+                "RestApiId": {
+                  "Fn::ImportValue": "MainRestApiId"
+                }
+              }
+            },
+            "ApiGatewayMethodUsersUseridVarOptions": {
+              "Type": "AWS::ApiGateway::Method",
+              "Properties": {
+                "AuthorizationType": "NONE",
+                "HttpMethod": "OPTIONS",
+                "MethodResponses": [
+                  {
+                    "StatusCode": "200",
+                    "ResponseParameters": {
+                      "method.response.header.Access-Control-Allow-Origin": true,
+                      "method.response.header.Access-Control-Allow-Headers": true,
+                      "method.response.header.Access-Control-Allow-Methods": true
+                    },
+                    "ResponseModels": {}
+                  }
+                ],
+                "RequestParameters": {},
+                "Integration": {
+                  "Type": "MOCK",
+                  "RequestTemplates": {
+                    "application/json": "{statusCode:200}"
+                  },
+                  "ContentHandling": "CONVERT_TO_TEXT",
+                  "IntegrationResponses": [
+                    {
+                      "StatusCode": "200",
+                      "ResponseParameters": {
+                        "method.response.header.Access-Control-Allow-Origin": "'*'",
+                        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Api-Key,X-Amz-Date,X-Amz-Security-Token'",
+                        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,DELETE,PUT,GET'"
+                      },
+                      "ResponseTemplates": {
+                        "application/json": ""
+                      }
+                    }
+                  ]
+                },
+                "ResourceId": {
+                  "Ref": "ApiGatewayResourceUsersUseridVar"
+                },
+                "RestApiId": {
+                  "Fn::ImportValue": "MainRestApiId"
+                }
+              }
+            },
+            "ApiGatewayMethodUsersRegisterPost": {
+              "Type": "AWS::ApiGateway::Method",
+              "Properties": {
+                "HttpMethod": "POST",
+                "RequestParameters": {},
+                "ResourceId": {
+                  "Ref": "ApiGatewayResourceUsersRegister"
+                },
+                "RestApiId": {
+                  "Fn::ImportValue": "MainRestApiId"
+                },
+                "ApiKeyRequired": "<REDACTED>",
+                "AuthorizationType": "NONE",
+                "Integration": {
+                  "IntegrationHttpMethod": "POST",
+                  "Type": "AWS_PROXY",
+                  "Uri": {
+                    "Fn::Join": [
+                      "",
+                      [
+                        "arn:",
+                        {
+                          "Ref": "AWS::Partition"
+                        },
+                        ":apigateway:",
+                        {
+                          "Ref": "AWS::Region"
+                        },
+                        ":lambda:path/2015-03-31/functions/",
+                        {
+                          "Fn::GetAtt": [
+                            "RegisterLambdaFunction",
+                            "Arn"
+                          ]
+                        },
+                        "/invocations"
+                      ]
+                    ]
+                  }
+                },
+                "MethodResponses": []
+              },
+              "DependsOn": [
+                "RegisterLambdaPermissionApiGateway"
+              ]
+            },
+            "ApiGatewayMethodUsersLoginPost": {
+              "Type": "AWS::ApiGateway::Method",
+              "Properties": {
+                "HttpMethod": "POST",
+                "RequestParameters": {},
+                "ResourceId": {
+                  "Ref": "ApiGatewayResourceUsersLogin"
+                },
+                "RestApiId": {
+                  "Fn::ImportValue": "MainRestApiId"
+                },
+                "ApiKeyRequired": "<REDACTED>",
+                "AuthorizationType": "NONE",
+                "Integration": {
+                  "IntegrationHttpMethod": "POST",
+                  "Type": "AWS_PROXY",
+                  "Uri": {
+                    "Fn::Join": [
+                      "",
+                      [
+                        "arn:",
+                        {
+                          "Ref": "AWS::Partition"
+                        },
+                        ":apigateway:",
+                        {
+                          "Ref": "AWS::Region"
+                        },
+                        ":lambda:path/2015-03-31/functions/",
+                        {
+                          "Fn::GetAtt": [
+                            "LoginLambdaFunction",
+                            "Arn"
+                          ]
+                        },
+                        "/invocations"
+                      ]
+                    ]
+                  }
+                },
+                "MethodResponses": []
+              },
+              "DependsOn": [
+                "LoginLambdaPermissionApiGateway"
+              ]
+            },
+            "ApiGatewayMethodUsersUseridVarGet": {
+              "Type": "AWS::ApiGateway::Method",
+              "Properties": {
+                "HttpMethod": "GET",
+                "RequestParameters": {},
+                "ResourceId": {
+                  "Ref": "ApiGatewayResourceUsersUseridVar"
+                },
+                "RestApiId": {
+                  "Fn::ImportValue": "MainRestApiId"
+                },
+                "ApiKeyRequired": "<REDACTED>",
+                "AuthorizationType": "CUSTOM",
+                "AuthorizerId": {
+                  "Fn::ImportValue": "MainAuthorizerId"
+                },
+                "Integration": {
+                  "IntegrationHttpMethod": "POST",
+                  "Type": "AWS_PROXY",
+                  "Uri": {
+                    "Fn::Join": [
+                      "",
+                      [
+                        "arn:",
+                        {
+                          "Ref": "AWS::Partition"
+                        },
+                        ":apigateway:",
+                        {
+                          "Ref": "AWS::Region"
+                        },
+                        ":lambda:path/2015-03-31/functions/",
+                        {
+                          "Fn::GetAtt": [
+                            "GetUserLambdaFunction",
+                            "Arn"
+                          ]
+                        },
+                        "/invocations"
+                      ]
+                    ]
+                  }
+                },
+                "MethodResponses": []
+              },
+              "DependsOn": [
+                "GetUserLambdaPermissionApiGateway"
+              ]
+            },
+            "ApiGatewayMethodUsersUseridVarPut": {
+              "Type": "AWS::ApiGateway::Method",
+              "Properties": {
+                "HttpMethod": "PUT",
+                "RequestParameters": {},
+                "ResourceId": {
+                  "Ref": "ApiGatewayResourceUsersUseridVar"
+                },
+                "RestApiId": {
+                  "Fn::ImportValue": "MainRestApiId"
+                },
+                "ApiKeyRequired": "<REDACTED>",
+                "AuthorizationType": "CUSTOM",
+                "AuthorizerId": {
+                  "Fn::ImportValue": "MainAuthorizerId"
+                },
+                "Integration": {
+                  "IntegrationHttpMethod": "POST",
+                  "Type": "AWS_PROXY",
+                  "Uri": {
+                    "Fn::Join": [
+                      "",
+                      [
+                        "arn:",
+                        {
+                          "Ref": "AWS::Partition"
+                        },
+                        ":apigateway:",
+                        {
+                          "Ref": "AWS::Region"
+                        },
+                        ":lambda:path/2015-03-31/functions/",
+                        {
+                          "Fn::GetAtt": [
+                            "UpdateUserLambdaFunction",
+                            "Arn"
+                          ]
+                        },
+                        "/invocations"
+                      ]
+                    ]
+                  }
+                },
+                "MethodResponses": []
+              },
+              "DependsOn": [
+                "UpdateUserLambdaPermissionApiGateway"
+              ]
+            },
+            "ApiGatewayMethodUsersUseridVarDelete": {
+              "Type": "AWS::ApiGateway::Method",
+              "Properties": {
+                "HttpMethod": "DELETE",
+                "RequestParameters": {},
+                "ResourceId": {
+                  "Ref": "ApiGatewayResourceUsersUseridVar"
+                },
+                "RestApiId": {
+                  "Fn::ImportValue": "MainRestApiId"
+                },
+                "ApiKeyRequired": "<REDACTED>",
+                "AuthorizationType": "CUSTOM",
+                "AuthorizerId": {
+                  "Fn::ImportValue": "MainAuthorizerId"
+                },
+                "Integration": {
+                  "IntegrationHttpMethod": "POST",
+                  "Type": "AWS_PROXY",
+                  "Uri": {
+                    "Fn::Join": [
+                      "",
+                      [
+                        "arn:",
+                        {
+                          "Ref": "AWS::Partition"
+                        },
+                        ":apigateway:",
+                        {
+                          "Ref": "AWS::Region"
+                        },
+                        ":lambda:path/2015-03-31/functions/",
+                        {
+                          "Fn::GetAtt": [
+                            "DeleteUserLambdaFunction",
+                            "Arn"
+                          ]
+                        },
+                        "/invocations"
+                      ]
+                    ]
+                  }
+                },
+                "MethodResponses": []
+              },
+              "DependsOn": [
+                "DeleteUserLambdaPermissionApiGateway"
+              ]
+            },
+            "ApiGatewayDeployment1794101537340": {
+              "Type": "AWS::ApiGateway::Deployment",
+              "Properties": {
+                "RestApiId": {
+                  "Fn::ImportValue": "MainRestApiId"
+                },
+                "StageName": "local"
+              },
+              "DependsOn": [
+                "ApiGatewayMethodUsersRegisterOptions",
+                "ApiGatewayMethodUsersLoginOptions",
+                "ApiGatewayMethodUsersUseridVarOptions",
+                "ApiGatewayMethodUsersRegisterPost",
+                "ApiGatewayMethodUsersLoginPost",
+                "ApiGatewayMethodUsersUseridVarGet",
+                "ApiGatewayMethodUsersUseridVarPut",
+                "ApiGatewayMethodUsersUseridVarDelete"
+              ]
+            },
+            "RegisterLambdaPermissionApiGateway": {
+              "Type": "AWS::Lambda::Permission",
+              "Properties": {
+                "FunctionName": {
+                  "Fn::GetAtt": [
+                    "RegisterLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "Action": "lambda:InvokeFunction",
+                "Principal": "apigateway.amazonaws.com",
+                "SourceArn": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":execute-api:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":",
+                      {
+                        "Fn::ImportValue": "MainRestApiId"
+                      },
+                      "/*/*"
+                    ]
+                  ]
+                }
+              }
+            },
+            "LoginLambdaPermissionApiGateway": {
+              "Type": "AWS::Lambda::Permission",
+              "Properties": {
+                "FunctionName": {
+                  "Fn::GetAtt": [
+                    "LoginLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "Action": "lambda:InvokeFunction",
+                "Principal": "apigateway.amazonaws.com",
+                "SourceArn": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":execute-api:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":",
+                      {
+                        "Fn::ImportValue": "MainRestApiId"
+                      },
+                      "/*/*"
+                    ]
+                  ]
+                }
+              }
+            },
+            "GetUserLambdaPermissionApiGateway": {
+              "Type": "AWS::Lambda::Permission",
+              "Properties": {
+                "FunctionName": {
+                  "Fn::GetAtt": [
+                    "GetUserLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "Action": "lambda:InvokeFunction",
+                "Principal": "apigateway.amazonaws.com",
+                "SourceArn": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":execute-api:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":",
+                      {
+                        "Fn::ImportValue": "MainRestApiId"
+                      },
+                      "/*/*"
+                    ]
+                  ]
+                }
+              }
+            },
+            "UpdateUserLambdaPermissionApiGateway": {
+              "Type": "AWS::Lambda::Permission",
+              "Properties": {
+                "FunctionName": {
+                  "Fn::GetAtt": [
+                    "UpdateUserLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "Action": "lambda:InvokeFunction",
+                "Principal": "apigateway.amazonaws.com",
+                "SourceArn": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":execute-api:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":",
+                      {
+                        "Fn::ImportValue": "MainRestApiId"
+                      },
+                      "/*/*"
+                    ]
+                  ]
+                }
+              }
+            },
+            "DeleteUserLambdaPermissionApiGateway": {
+              "Type": "AWS::Lambda::Permission",
+              "Properties": {
+                "FunctionName": {
+                  "Fn::GetAtt": [
+                    "DeleteUserLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "Action": "lambda:InvokeFunction",
+                "Principal": "apigateway.amazonaws.com",
+                "SourceArn": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":execute-api:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":",
+                      {
+                        "Fn::ImportValue": "MainRestApiId"
+                      },
+                      "/*/*"
+                    ]
+                  ]
+                }
+              }
+            },
+            "UsersTable": {
+              "Type": "AWS::DynamoDB::Table",
+              "Properties": {
+                "TableName": "taller-local-users",
+                "AttributeDefinitions": [
+                  {
+                    "AttributeName": "userId",
+                    "AttributeType": "S"
+                  },
+                  {
+                    "AttributeName": "email",
+                    "AttributeType": "S"
+                  }
+                ],
+                "KeySchema": [
+                  {
+                    "AttributeName": "userId",
+                    "KeyType": "HASH"
+                  }
+                ],
+                "GlobalSecondaryIndexes": [
+                  {
+                    "IndexName": "EmailIndex",
+                    "KeySchema": [
+                      {
+                        "AttributeName": "email",
+                        "KeyType": "HASH"
+                      }
+                    ],
+                    "Projection": {
+                      "ProjectionType": "ALL"
+                    }
+                  }
+                ],
+                "BillingMode": "PAY_PER_REQUEST"
+              }
+            }
+          },
+          "Outputs": {
+            "ServerlessDeploymentBucketName": {
+              "Value": "serverless-framework-deployments-us-east-1-2bbae8e1-e763",
+              "Export": {
+                "Name": "sls-tallerusuarios-local-ServerlessDeploymentBucketName"
+              }
+            },
+            "RegisterLambdaFunctionQualifiedArn": {
+              "Description": "Current Lambda function version",
+              "Value": {
+                "Ref": "RegisterLambdaVersionLPd9XHAMt31q756J62wkmlBtvW7toqZVRppXIFDZ78"
+              },
+              "Export": {
+                "Name": "sls-tallerusuarios-local-RegisterLambdaFunctionQualifiedArn"
+              }
+            },
+            "LoginLambdaFunctionQualifiedArn": {
+              "Description": "Current Lambda function version",
+              "Value": {
+                "Ref": "LoginLambdaVersionrYMyMohWbZx47kAluCPzYUucMAmTqHDRyVcZGEAI"
+              },
+              "Export": {
+                "Name": "sls-tallerusuarios-local-LoginLambdaFunctionQualifiedArn"
+              }
+            },
+            "GetUserLambdaFunctionQualifiedArn": {
+              "Description": "Current Lambda function version",
+              "Value": {
+                "Ref": "GetUserLambdaVersionbUsavsSAl6DrH84xGlBq5WGjP82TwkwkdUfvSnCWXY"
+              },
+              "Export": {
+                "Name": "sls-tallerusuarios-local-GetUserLambdaFunctionQualifiedArn"
+              }
+            },
+            "UpdateUserLambdaFunctionQualifiedArn": {
+              "Description": "Current Lambda function version",
+              "Value": {
+                "Ref": "UpdateUserLambdaVersionF3tWEMP6hijeca1UpKtN2F8FGz0Tr8HeGTwYs6vn9c"
+              },
+              "Export": {
+                "Name": "sls-tallerusuarios-local-UpdateUserLambdaFunctionQualifiedArn"
+              }
+            },
+            "DeleteUserLambdaFunctionQualifiedArn": {
+              "Description": "Current Lambda function version",
+              "Value": {
+                "Ref": "DeleteUserLambdaVersionegAVWlTm7pbkGxAqyE3i1sUks8Eas6zhB1xdNFnz4c"
+              },
+              "Export": {
+                "Name": "sls-tallerusuarios-local-DeleteUserLambdaFunctionQualifiedArn"
+              }
+            },
+            "ServiceEndpoint": {
+              "Description": "URL of the service endpoint",
+              "Value": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "https://",
+                    {
+                      "Fn::ImportValue": "MainRestApiId"
+                    },
+                    ".execute-api.",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ".",
+                    {
+                      "Ref": "AWS::URLSuffix"
+                    },
+                    "/local"
+                  ]
+                ]
+              },
+              "Export": {
+                "Name": "sls-tallerusuarios-local-ServiceEndpoint"
+              }
+            }
+          }
+        },
+        "vpc": {}
+      },
+      "plugins": [
+        "serverless-localstack"
+      ],
+      "custom": {
+        "localstack": {
+          "stages": [
+            "local"
+          ],
+          "host": "http://localhost",
+          "edgePort": 4566,
+          "autostart": false
+        }
+      },
+      "functions": {
+        "register": {
+          "handler": "src/handlers/register.handler",
+          "name": "taller-local-Users-Register",
+          "events": [
+            {
+              "http": {
+                "method": "post",
+                "path": "users/register",
+                "cors": {
+                  "origin": "*",
+                  "methods": [
+                    "OPTIONS",
+                    "POST"
+                  ],
+                  "headers": [
+                    "Content-Type",
+                    "Authorization",
+                    "X-Api-Key",
+                    "X-Amz-Date",
+                    "X-Amz-Security-Token"
+                  ],
+                  "allowCredentials": "<REDACTED>"
+                },
+                "integration": "AWS_PROXY"
+              }
+            }
+          ],
+          "environment": {
+            "NODE_OPTIONS": "--enable-source-maps"
+          },
+          "package": {},
+          "memory": 1024,
+          "timeout": 6,
+          "runtime": "nodejs22.x",
+          "vpc": {},
+          "versionLogicalId": "RegisterLambdaVersionLPd9XHAMt31q756J62wkmlBtvW7toqZVRppXIFDZ78"
+        },
+        "login": {
+          "handler": "src/handlers/login.handler",
+          "name": "taller-local-Users-Login",
+          "events": [
+            {
+              "http": {
+                "method": "post",
+                "path": "users/login",
+                "cors": {
+                  "origin": "*",
+                  "methods": [
+                    "OPTIONS",
+                    "POST"
+                  ],
+                  "headers": [
+                    "Content-Type",
+                    "Authorization",
+                    "X-Api-Key",
+                    "X-Amz-Date",
+                    "X-Amz-Security-Token"
+                  ],
+                  "allowCredentials": "<REDACTED>"
+                },
+                "integration": "AWS_PROXY"
+              }
+            }
+          ],
+          "environment": {
+            "NODE_OPTIONS": "--enable-source-maps"
+          },
+          "package": {},
+          "memory": 1024,
+          "timeout": 6,
+          "runtime": "nodejs22.x",
+          "vpc": {},
+          "versionLogicalId": "LoginLambdaVersionrYMyMohWbZx47kAluCPzYUucMAmTqHDRyVcZGEAI"
+        },
+        "getUser": {
+          "handler": "src/handlers/getUser.handler",
+          "name": "taller-local-Users-GetUser",
+          "events": [
+            {
+              "http": {
+                "method": "get",
+                "path": "users/{userId}",
+                "authorizer": {
+                  "type": "TOKEN",
+                  "managedExternally": false,
+                  "authorizerId": {
+                    "Fn::ImportValue": "MainAuthorizerId"
+                  },
+                  "resultTtlInSeconds": 300,
+                  "identitySource": "method.request.header.Authorization",
+                  "claims": []
+                },
+                "cors": {
+                  "origin": "*",
+                  "methods": [
+                    "OPTIONS",
+                    "GET"
+                  ],
+                  "headers": [
+                    "Content-Type",
+                    "Authorization",
+                    "X-Api-Key",
+                    "X-Amz-Date",
+                    "X-Amz-Security-Token"
+                  ],
+                  "allowCredentials": "<REDACTED>"
+                },
+                "integration": "AWS_PROXY"
+              }
+            }
+          ],
+          "environment": {
+            "NODE_OPTIONS": "--enable-source-maps"
+          },
+          "package": {},
+          "memory": 1024,
+          "timeout": 6,
+          "runtime": "nodejs22.x",
+          "vpc": {},
+          "versionLogicalId": "GetUserLambdaVersionbUsavsSAl6DrH84xGlBq5WGjP82TwkwkdUfvSnCWXY"
+        },
+        "updateUser": {
+          "handler": "src/handlers/updateUser.handler",
+          "name": "taller-local-Users-Update",
+          "events": [
+            {
+              "http": {
+                "method": "put",
+                "path": "users/{userId}",
+                "authorizer": {
+                  "type": "TOKEN",
+                  "managedExternally": false,
+                  "authorizerId": {
+                    "Fn::ImportValue": "MainAuthorizerId"
+                  },
+                  "resultTtlInSeconds": 300,
+                  "identitySource": "method.request.header.Authorization",
+                  "claims": []
+                },
+                "cors": {
+                  "origin": "*",
+                  "methods": [
+                    "OPTIONS",
+                    "PUT"
+                  ],
+                  "headers": [
+                    "Content-Type",
+                    "Authorization",
+                    "X-Api-Key",
+                    "X-Amz-Date",
+                    "X-Amz-Security-Token"
+                  ],
+                  "allowCredentials": "<REDACTED>"
+                },
+                "integration": "AWS_PROXY"
+              }
+            }
+          ],
+          "environment": {
+            "NODE_OPTIONS": "--enable-source-maps"
+          },
+          "package": {},
+          "memory": 1024,
+          "timeout": 6,
+          "runtime": "nodejs22.x",
+          "vpc": {},
+          "versionLogicalId": "UpdateUserLambdaVersionF3tWEMP6hijeca1UpKtN2F8FGz0Tr8HeGTwYs6vn9c"
+        },
+        "deleteUser": {
+          "handler": "src/handlers/deleteUser.handler",
+          "name": "taller-local-Users-Delete",
+          "events": [
+            {
+              "http": {
+                "method": "delete",
+                "path": "users/{userId}",
+                "authorizer": {
+                  "type": "TOKEN",
+                  "managedExternally": false,
+                  "authorizerId": {
+                    "Fn::ImportValue": "MainAuthorizerId"
+                  },
+                  "resultTtlInSeconds": 300,
+                  "identitySource": "method.request.header.Authorization",
+                  "claims": []
+                },
+                "cors": {
+                  "origin": "*",
+                  "methods": [
+                    "OPTIONS",
+                    "DELETE"
+                  ],
+                  "headers": [
+                    "Content-Type",
+                    "Authorization",
+                    "X-Api-Key",
+                    "X-Amz-Date",
+                    "X-Amz-Security-Token"
+                  ],
+                  "allowCredentials": "<REDACTED>"
+                },
+                "integration": "AWS_PROXY"
+              }
+            }
+          ],
+          "environment": {
+            "NODE_OPTIONS": "--enable-source-maps"
+          },
+          "package": {},
+          "memory": 1024,
+          "timeout": 6,
+          "runtime": "nodejs22.x",
+          "vpc": {},
+          "versionLogicalId": "DeleteUserLambdaVersionegAVWlTm7pbkGxAqyE3i1sUks8Eas6zhB1xdNFnz4c"
+        }
+      },
+      "resources": {
+        "Resources": {
+          "UsersTable": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+              "TableName": "taller-local-users",
+              "AttributeDefinitions": [
+                {
+                  "AttributeName": "userId",
+                  "AttributeType": "S"
+                },
+                {
+                  "AttributeName": "email",
+                  "AttributeType": "S"
+                }
+              ],
+              "KeySchema": [
+                {
+                  "AttributeName": "userId",
+                  "KeyType": "HASH"
+                }
+              ],
+              "GlobalSecondaryIndexes": [
+                {
+                  "IndexName": "EmailIndex",
+                  "KeySchema": [
+                    {
+                      "AttributeName": "email",
+                      "KeyType": "HASH"
+                    }
+                  ],
+                  "Projection": {
+                    "ProjectionType": "ALL"
+                  }
+                }
+              ],
+              "BillingMode": "PAY_PER_REQUEST"
+            }
+          }
+        },
+        "Outputs": {}
+      }
+    },
+    "provider": {
+      "name": "aws",
+      "runtime": "nodejs22.x",
+      "stage": "local",
+      "region": "us-east-1",
+      "environment": {
+        "STAGE": "local",
+        "USERS_TABLE": "taller-local-users",
+        "JWT_SECRET": "<REDACTED>",
+        "CORS_ORIGINS": "*"
+      },
+      "apiGateway": {
+        "restApiId": {
+          "Fn::ImportValue": "MainRestApiId"
+        },
+        "restApiRootResourceId": {
+          "Fn::ImportValue": "MainRestApiRootResourceId"
+        }
+      },
+      "iamRoleStatements": [
+        {
+          "Effect": "Allow",
+          "Action": [
+            "dynamodb:PutItem",
+            "dynamodb:GetItem",
+            "dynamodb:UpdateItem",
+            "dynamodb:DeleteItem",
+            "dynamodb:Query",
+            "dynamodb:Scan"
+          ],
+          "Resource": [
+            {
+              "Fn::GetAtt": [
+                "UsersTable",
+                "Arn"
+              ]
+            },
+            {
+              "Fn::Join": [
+                "/",
+                [
+                  {
+                    "Fn::GetAtt": [
+                      "UsersTable",
+                      "Arn"
+                    ]
+                  },
+                  "index/*"
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "versionFunctions": true,
+      "compiledCloudFormationTemplate": {
+        "AWSTemplateFormatVersion": "2010-09-09",
+        "Description": "The AWS CloudFormation template for this Serverless application",
+        "Resources": {
+          "RegisterLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/taller-local-Users-Register"
+            }
+          },
+          "LoginLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/taller-local-Users-Login"
+            }
+          },
+          "GetUserLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/taller-local-Users-GetUser"
+            }
+          },
+          "UpdateUserLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/taller-local-Users-Update"
+            }
+          },
+          "DeleteUserLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/taller-local-Users-Delete"
+            }
+          },
+          "IamRoleLambdaExecution": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+              "AssumeRolePolicyDocument": {
+                "Version": "2012-10-17",
+                "Statement": [
+                  {
+                    "Effect": "Allow",
+                    "Principal": {
+                      "Service": [
+                        "lambda.amazonaws.com"
+                      ]
+                    },
+                    "Action": [
+                      "sts:AssumeRole"
+                    ]
+                  }
+                ]
+              },
+              "Policies": [
+                {
+                  "PolicyName": {
+                    "Fn::Join": [
+                      "-",
+                      [
+                        "tallerusuarios",
+                        "local",
+                        "lambda"
+                      ]
+                    ]
+                  },
+                  "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "logs:CreateLogStream",
+                          "logs:CreateLogGroup",
+                          "logs:TagResource"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-local-Users-Register:*"
+                          },
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-local-Users-Login:*"
+                          },
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-local-Users-GetUser:*"
+                          },
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-local-Users-Update:*"
+                          },
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-local-Users-Delete:*"
+                          }
+                        ]
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "logs:PutLogEvents"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-local-Users-Register:*:*"
+                          },
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-local-Users-Login:*:*"
+                          },
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-local-Users-GetUser:*:*"
+                          },
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-local-Users-Update:*:*"
+                          },
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-local-Users-Delete:*:*"
+                          }
+                        ]
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "dynamodb:PutItem",
+                          "dynamodb:GetItem",
+                          "dynamodb:UpdateItem",
+                          "dynamodb:DeleteItem",
+                          "dynamodb:Query",
+                          "dynamodb:Scan"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::GetAtt": [
+                              "UsersTable",
+                              "Arn"
+                            ]
+                          },
+                          {
+                            "Fn::Join": [
+                              "/",
+                              [
+                                {
+                                  "Fn::GetAtt": [
+                                    "UsersTable",
+                                    "Arn"
+                                  ]
+                                },
+                                "index/*"
+                              ]
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ],
+              "Path": "/",
+              "RoleName": {
+                "Fn::Join": [
+                  "-",
+                  [
+                    "tallerusuarios",
+                    "local",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    "lambdaRole"
+                  ]
+                ]
+              }
+            }
+          },
+          "RegisterLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "serverless-framework-deployments-us-east-1-2bbae8e1-e763",
+                "S3Key": "serverless/tallerusuarios/local/1794101543117-2026-11-08T01:32:23.117Z/tallerusuarios.zip"
+              },
+              "Handler": "src/handlers/register.handler",
+              "Runtime": "nodejs22.x",
+              "FunctionName": "taller-local-Users-Register",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "STAGE": "local",
+                  "USERS_TABLE": "taller-local-users",
+                  "JWT_SECRET": "<REDACTED>",
+                  "CORS_ORIGINS": "*",
+                  "NODE_OPTIONS": "--enable-source-maps"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "RegisterLogGroup"
+            ]
+          },
+          "LoginLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "serverless-framework-deployments-us-east-1-2bbae8e1-e763",
+                "S3Key": "serverless/tallerusuarios/local/1794101543117-2026-11-08T01:32:23.117Z/tallerusuarios.zip"
+              },
+              "Handler": "src/handlers/login.handler",
+              "Runtime": "nodejs22.x",
+              "FunctionName": "taller-local-Users-Login",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "STAGE": "local",
+                  "USERS_TABLE": "taller-local-users",
+                  "JWT_SECRET": "<REDACTED>",
+                  "CORS_ORIGINS": "*",
+                  "NODE_OPTIONS": "--enable-source-maps"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "LoginLogGroup"
+            ]
+          },
+          "GetUserLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "serverless-framework-deployments-us-east-1-2bbae8e1-e763",
+                "S3Key": "serverless/tallerusuarios/local/1794101543117-2026-11-08T01:32:23.117Z/tallerusuarios.zip"
+              },
+              "Handler": "src/handlers/getUser.handler",
+              "Runtime": "nodejs22.x",
+              "FunctionName": "taller-local-Users-GetUser",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "STAGE": "local",
+                  "USERS_TABLE": "taller-local-users",
+                  "JWT_SECRET": "<REDACTED>",
+                  "CORS_ORIGINS": "*",
+                  "NODE_OPTIONS": "--enable-source-maps"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "GetUserLogGroup"
+            ]
+          },
+          "UpdateUserLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "serverless-framework-deployments-us-east-1-2bbae8e1-e763",
+                "S3Key": "serverless/tallerusuarios/local/1794101543117-2026-11-08T01:32:23.117Z/tallerusuarios.zip"
+              },
+              "Handler": "src/handlers/updateUser.handler",
+              "Runtime": "nodejs22.x",
+              "FunctionName": "taller-local-Users-Update",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "STAGE": "local",
+                  "USERS_TABLE": "taller-local-users",
+                  "JWT_SECRET": "<REDACTED>",
+                  "CORS_ORIGINS": "*",
+                  "NODE_OPTIONS": "--enable-source-maps"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "UpdateUserLogGroup"
+            ]
+          },
+          "DeleteUserLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "serverless-framework-deployments-us-east-1-2bbae8e1-e763",
+                "S3Key": "serverless/tallerusuarios/local/1794101543117-2026-11-08T01:32:23.117Z/tallerusuarios.zip"
+              },
+              "Handler": "src/handlers/deleteUser.handler",
+              "Runtime": "nodejs22.x",
+              "FunctionName": "taller-local-Users-Delete",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "STAGE": "local",
+                  "USERS_TABLE": "taller-local-users",
+                  "JWT_SECRET": "<REDACTED>",
+                  "CORS_ORIGINS": "*",
+                  "NODE_OPTIONS": "--enable-source-maps"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "DeleteUserLogGroup"
+            ]
+          },
+          "RegisterLambdaVersionLPd9XHAMt31q756J62wkmlBtvW7toqZVRppXIFDZ78": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "RegisterLambdaFunction"
+              },
+              "CodeSha256": "XIoxzqC/XxSRGfR6Uoa5RxmV+cVJ46EU6XI0JPDYTVw="
+            }
+          },
+          "LoginLambdaVersionrYMyMohWbZx47kAluCPzYUucMAmTqHDRyVcZGEAI": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "LoginLambdaFunction"
+              },
+              "CodeSha256": "XIoxzqC/XxSRGfR6Uoa5RxmV+cVJ46EU6XI0JPDYTVw="
+            }
+          },
+          "GetUserLambdaVersionbUsavsSAl6DrH84xGlBq5WGjP82TwkwkdUfvSnCWXY": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "GetUserLambdaFunction"
+              },
+              "CodeSha256": "XIoxzqC/XxSRGfR6Uoa5RxmV+cVJ46EU6XI0JPDYTVw="
+            }
+          },
+          "UpdateUserLambdaVersionF3tWEMP6hijeca1UpKtN2F8FGz0Tr8HeGTwYs6vn9c": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "UpdateUserLambdaFunction"
+              },
+              "CodeSha256": "XIoxzqC/XxSRGfR6Uoa5RxmV+cVJ46EU6XI0JPDYTVw="
+            }
+          },
+          "DeleteUserLambdaVersionegAVWlTm7pbkGxAqyE3i1sUks8Eas6zhB1xdNFnz4c": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "DeleteUserLambdaFunction"
+              },
+              "CodeSha256": "XIoxzqC/XxSRGfR6Uoa5RxmV+cVJ46EU6XI0JPDYTVw="
+            }
+          },
+          "ApiGatewayResourceUsers": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Fn::ImportValue": "MainRestApiRootResourceId"
+              },
+              "PathPart": "users",
+              "RestApiId": {
+                "Fn::ImportValue": "MainRestApiId"
+              }
+            }
+          },
+          "ApiGatewayResourceUsersRegister": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Ref": "ApiGatewayResourceUsers"
+              },
+              "PathPart": "register",
+              "RestApiId": {
+                "Fn::ImportValue": "MainRestApiId"
+              }
+            }
+          },
+          "ApiGatewayResourceUsersLogin": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Ref": "ApiGatewayResourceUsers"
+              },
+              "PathPart": "login",
+              "RestApiId": {
+                "Fn::ImportValue": "MainRestApiId"
+              }
+            }
+          },
+          "ApiGatewayResourceUsersUseridVar": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Ref": "ApiGatewayResourceUsers"
+              },
+              "PathPart": "{userId}",
+              "RestApiId": {
+                "Fn::ImportValue": "MainRestApiId"
+              }
+            }
+          },
+          "ApiGatewayMethodUsersRegisterOptions": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "AuthorizationType": "NONE",
+              "HttpMethod": "OPTIONS",
+              "MethodResponses": [
+                {
+                  "StatusCode": "200",
+                  "ResponseParameters": {
+                    "method.response.header.Access-Control-Allow-Origin": true,
+                    "method.response.header.Access-Control-Allow-Headers": true,
+                    "method.response.header.Access-Control-Allow-Methods": true
+                  },
+                  "ResponseModels": {}
+                }
+              ],
+              "RequestParameters": {},
+              "Integration": {
+                "Type": "MOCK",
+                "RequestTemplates": {
+                  "application/json": "{statusCode:200}"
+                },
+                "ContentHandling": "CONVERT_TO_TEXT",
+                "IntegrationResponses": [
+                  {
+                    "StatusCode": "200",
+                    "ResponseParameters": {
+                      "method.response.header.Access-Control-Allow-Origin": "'*'",
+                      "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Api-Key,X-Amz-Date,X-Amz-Security-Token'",
+                      "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,POST'"
+                    },
+                    "ResponseTemplates": {
+                      "application/json": ""
+                    }
+                  }
+                ]
+              },
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceUsersRegister"
+              },
+              "RestApiId": {
+                "Fn::ImportValue": "MainRestApiId"
+              }
+            }
+          },
+          "ApiGatewayMethodUsersLoginOptions": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "AuthorizationType": "NONE",
+              "HttpMethod": "OPTIONS",
+              "MethodResponses": [
+                {
+                  "StatusCode": "200",
+                  "ResponseParameters": {
+                    "method.response.header.Access-Control-Allow-Origin": true,
+                    "method.response.header.Access-Control-Allow-Headers": true,
+                    "method.response.header.Access-Control-Allow-Methods": true
+                  },
+                  "ResponseModels": {}
+                }
+              ],
+              "RequestParameters": {},
+              "Integration": {
+                "Type": "MOCK",
+                "RequestTemplates": {
+                  "application/json": "{statusCode:200}"
+                },
+                "ContentHandling": "CONVERT_TO_TEXT",
+                "IntegrationResponses": [
+                  {
+                    "StatusCode": "200",
+                    "ResponseParameters": {
+                      "method.response.header.Access-Control-Allow-Origin": "'*'",
+                      "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Api-Key,X-Amz-Date,X-Amz-Security-Token'",
+                      "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,POST'"
+                    },
+                    "ResponseTemplates": {
+                      "application/json": ""
+                    }
+                  }
+                ]
+              },
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceUsersLogin"
+              },
+              "RestApiId": {
+                "Fn::ImportValue": "MainRestApiId"
+              }
+            }
+          },
+          "ApiGatewayMethodUsersUseridVarOptions": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "AuthorizationType": "NONE",
+              "HttpMethod": "OPTIONS",
+              "MethodResponses": [
+                {
+                  "StatusCode": "200",
+                  "ResponseParameters": {
+                    "method.response.header.Access-Control-Allow-Origin": true,
+                    "method.response.header.Access-Control-Allow-Headers": true,
+                    "method.response.header.Access-Control-Allow-Methods": true
+                  },
+                  "ResponseModels": {}
+                }
+              ],
+              "RequestParameters": {},
+              "Integration": {
+                "Type": "MOCK",
+                "RequestTemplates": {
+                  "application/json": "{statusCode:200}"
+                },
+                "ContentHandling": "CONVERT_TO_TEXT",
+                "IntegrationResponses": [
+                  {
+                    "StatusCode": "200",
+                    "ResponseParameters": {
+                      "method.response.header.Access-Control-Allow-Origin": "'*'",
+                      "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Api-Key,X-Amz-Date,X-Amz-Security-Token'",
+                      "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,DELETE,PUT,GET'"
+                    },
+                    "ResponseTemplates": {
+                      "application/json": ""
+                    }
+                  }
+                ]
+              },
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceUsersUseridVar"
+              },
+              "RestApiId": {
+                "Fn::ImportValue": "MainRestApiId"
+              }
+            }
+          },
+          "ApiGatewayMethodUsersRegisterPost": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "POST",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceUsersRegister"
+              },
+              "RestApiId": {
+                "Fn::ImportValue": "MainRestApiId"
+              },
+              "ApiKeyRequired": "<REDACTED>",
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "RegisterLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            },
+            "DependsOn": [
+              "RegisterLambdaPermissionApiGateway"
+            ]
+          },
+          "ApiGatewayMethodUsersLoginPost": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "POST",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceUsersLogin"
+              },
+              "RestApiId": {
+                "Fn::ImportValue": "MainRestApiId"
+              },
+              "ApiKeyRequired": "<REDACTED>",
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "LoginLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            },
+            "DependsOn": [
+              "LoginLambdaPermissionApiGateway"
+            ]
+          },
+          "ApiGatewayMethodUsersUseridVarGet": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "GET",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceUsersUseridVar"
+              },
+              "RestApiId": {
+                "Fn::ImportValue": "MainRestApiId"
+              },
+              "ApiKeyRequired": "<REDACTED>",
+              "AuthorizationType": "CUSTOM",
+              "AuthorizerId": {
+                "Fn::ImportValue": "MainAuthorizerId"
+              },
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "GetUserLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            },
+            "DependsOn": [
+              "GetUserLambdaPermissionApiGateway"
+            ]
+          },
+          "ApiGatewayMethodUsersUseridVarPut": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "PUT",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceUsersUseridVar"
+              },
+              "RestApiId": {
+                "Fn::ImportValue": "MainRestApiId"
+              },
+              "ApiKeyRequired": "<REDACTED>",
+              "AuthorizationType": "CUSTOM",
+              "AuthorizerId": {
+                "Fn::ImportValue": "MainAuthorizerId"
+              },
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "UpdateUserLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            },
+            "DependsOn": [
+              "UpdateUserLambdaPermissionApiGateway"
+            ]
+          },
+          "ApiGatewayMethodUsersUseridVarDelete": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "DELETE",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceUsersUseridVar"
+              },
+              "RestApiId": {
+                "Fn::ImportValue": "MainRestApiId"
+              },
+              "ApiKeyRequired": "<REDACTED>",
+              "AuthorizationType": "CUSTOM",
+              "AuthorizerId": {
+                "Fn::ImportValue": "MainAuthorizerId"
+              },
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "DeleteUserLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            },
+            "DependsOn": [
+              "DeleteUserLambdaPermissionApiGateway"
+            ]
+          },
+          "ApiGatewayDeployment1794101537340": {
+            "Type": "AWS::ApiGateway::Deployment",
+            "Properties": {
+              "RestApiId": {
+                "Fn::ImportValue": "MainRestApiId"
+              },
+              "StageName": "local"
+            },
+            "DependsOn": [
+              "ApiGatewayMethodUsersRegisterOptions",
+              "ApiGatewayMethodUsersLoginOptions",
+              "ApiGatewayMethodUsersUseridVarOptions",
+              "ApiGatewayMethodUsersRegisterPost",
+              "ApiGatewayMethodUsersLoginPost",
+              "ApiGatewayMethodUsersUseridVarGet",
+              "ApiGatewayMethodUsersUseridVarPut",
+              "ApiGatewayMethodUsersUseridVarDelete"
+            ]
+          },
+          "RegisterLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "RegisterLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Fn::ImportValue": "MainRestApiId"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "LoginLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "LoginLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Fn::ImportValue": "MainRestApiId"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "GetUserLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "GetUserLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Fn::ImportValue": "MainRestApiId"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "UpdateUserLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "UpdateUserLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Fn::ImportValue": "MainRestApiId"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "DeleteUserLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "DeleteUserLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Fn::ImportValue": "MainRestApiId"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "UsersTable": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+              "TableName": "taller-local-users",
+              "AttributeDefinitions": [
+                {
+                  "AttributeName": "userId",
+                  "AttributeType": "S"
+                },
+                {
+                  "AttributeName": "email",
+                  "AttributeType": "S"
+                }
+              ],
+              "KeySchema": [
+                {
+                  "AttributeName": "userId",
+                  "KeyType": "HASH"
+                }
+              ],
+              "GlobalSecondaryIndexes": [
+                {
+                  "IndexName": "EmailIndex",
+                  "KeySchema": [
+                    {
+                      "AttributeName": "email",
+                      "KeyType": "HASH"
+                    }
+                  ],
+                  "Projection": {
+                    "ProjectionType": "ALL"
+                  }
+                }
+              ],
+              "BillingMode": "PAY_PER_REQUEST"
+            }
+          }
+        },
+        "Outputs": {
+          "ServerlessDeploymentBucketName": {
+            "Value": "serverless-framework-deployments-us-east-1-2bbae8e1-e763",
+            "Export": {
+              "Name": "sls-tallerusuarios-local-ServerlessDeploymentBucketName"
+            }
+          },
+          "RegisterLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "RegisterLambdaVersionLPd9XHAMt31q756J62wkmlBtvW7toqZVRppXIFDZ78"
+            },
+            "Export": {
+              "Name": "sls-tallerusuarios-local-RegisterLambdaFunctionQualifiedArn"
+            }
+          },
+          "LoginLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "LoginLambdaVersionrYMyMohWbZx47kAluCPzYUucMAmTqHDRyVcZGEAI"
+            },
+            "Export": {
+              "Name": "sls-tallerusuarios-local-LoginLambdaFunctionQualifiedArn"
+            }
+          },
+          "GetUserLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "GetUserLambdaVersionbUsavsSAl6DrH84xGlBq5WGjP82TwkwkdUfvSnCWXY"
+            },
+            "Export": {
+              "Name": "sls-tallerusuarios-local-GetUserLambdaFunctionQualifiedArn"
+            }
+          },
+          "UpdateUserLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "UpdateUserLambdaVersionF3tWEMP6hijeca1UpKtN2F8FGz0Tr8HeGTwYs6vn9c"
+            },
+            "Export": {
+              "Name": "sls-tallerusuarios-local-UpdateUserLambdaFunctionQualifiedArn"
+            }
+          },
+          "DeleteUserLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "DeleteUserLambdaVersionegAVWlTm7pbkGxAqyE3i1sUks8Eas6zhB1xdNFnz4c"
+            },
+            "Export": {
+              "Name": "sls-tallerusuarios-local-DeleteUserLambdaFunctionQualifiedArn"
+            }
+          },
+          "ServiceEndpoint": {
+            "Description": "URL of the service endpoint",
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  "https://",
+                  {
+                    "Fn::ImportValue": "MainRestApiId"
+                  },
+                  ".execute-api.",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ".",
+                  {
+                    "Ref": "AWS::URLSuffix"
+                  },
+                  "/local"
+                ]
+              ]
+            },
+            "Export": {
+              "Name": "sls-tallerusuarios-local-ServiceEndpoint"
+            }
+          }
+        }
+      },
+      "vpc": {}
+    },
+    "dashboard": {
+      "isEnabledForService": false,
+      "requiredAuthentication": false,
+      "orgFeaturesInUse": null,
+      "orgObservabilityIntegrations": null,
+      "serviceAppId": null,
+      "serviceProvider": null,
+      "instanceParameters": null
+    },
+    "serviceRawFile": "org: misaelsalazar980\r\nservice: tallerusuarios\r\nframeworkVersion: \"4\"\r\n\r\nprovider:\r\n  name: aws\r\n  runtime: nodejs22.x\r\n  stage: ${opt:stage, 'local'}\r\n  region: us-east-1\r\n  environment:\r\n    STAGE: ${self:provider.stage}\r\n    USERS_TABLE: taller-${self:provider.stage}-users\r\n    JWT_SECRET: ${ssm:/taller/${self:provider.stage}/jwt-secret}\r\n    CORS_ORIGINS: ${file(./config/config-${self:provider.stage}.json):CORS_ORIGINS}\r\n  apiGateway:\r\n    restApiId:\r\n      Fn::ImportValue: MainRestApiId\r\n    restApiRootResourceId:\r\n      Fn::ImportValue: MainRestApiRootResourceId\r\n  iamRoleStatements:\r\n    - Effect: Allow\r\n      Action:\r\n        - dynamodb:PutItem\r\n        - dynamodb:GetItem\r\n        - dynamodb:UpdateItem\r\n        - dynamodb:DeleteItem\r\n        - dynamodb:Query\r\n        - dynamodb:Scan\r\n      Resource:\r\n        - Fn::GetAtt: [UsersTable, Arn]\r\n        - Fn::Join:\r\n            - \"/\"\r\n            - - { Fn::GetAtt: [UsersTable, Arn] }\r\n              - \"index/*\"\r\n\r\nplugins:\r\n  - serverless-localstack\r\n\r\ncustom:\r\n  localstack:\r\n    stages:\r\n      - local\r\n    host: http://localhost\r\n    edgePort: 4566\r\n    autostart: false\r\n\r\nfunctions:\r\n  register:\r\n    handler: src/handlers/register.handler\r\n    name: taller-${self:provider.stage}-Users-Register\r\n    events:\r\n      - http:\r\n          method: post\r\n          path: /users/register\r\n          cors:\r\n            origin: \"*\"\r\n            headers:\r\n              - Content-Type\r\n              - Authorization\r\n              - X-Api-Key\r\n              - X-Amz-Date\r\n              - X-Amz-Security-Token\r\n\r\n  login:\r\n    handler: src/handlers/login.handler\r\n    name: taller-${self:provider.stage}-Users-Login\r\n    events:\r\n      - http:\r\n          method: post\r\n          path: /users/login\r\n          cors:\r\n            origin: \"*\"\r\n            headers:\r\n              - Content-Type\r\n              - Authorization\r\n              - X-Api-Key\r\n              - X-Amz-Date\r\n              - X-Amz-Security-Token\r\n\r\n  getUser:\r\n    handler: src/handlers/getUser.handler\r\n    name: taller-${self:provider.stage}-Users-GetUser\r\n    events:\r\n      - http:\r\n          method: get\r\n          path: /users/{userId}\r\n          authorizer:\r\n            type: TOKEN\r\n            authorizerId:\r\n              Fn::ImportValue: MainAuthorizerId\r\n          cors:\r\n            origin: \"*\"\r\n            headers:\r\n              - Content-Type\r\n              - Authorization\r\n              - X-Api-Key\r\n              - X-Amz-Date\r\n              - X-Amz-Security-Token\r\n\r\n  updateUser:\r\n    handler: src/handlers/updateUser.handler\r\n    name: taller-${self:provider.stage}-Users-Update\r\n    events:\r\n      - http:\r\n          method: put\r\n          path: /users/{userId}\r\n          authorizer:\r\n            type: TOKEN\r\n            authorizerId:\r\n              Fn::ImportValue: MainAuthorizerId\r\n          cors:\r\n            origin: \"*\"\r\n            headers:\r\n              - Content-Type\r\n              - Authorization\r\n              - X-Api-Key\r\n              - X-Amz-Date\r\n              - X-Amz-Security-Token\r\n\r\n  deleteUser:\r\n    handler: src/handlers/deleteUser.handler\r\n    name: taller-${self:provider.stage}-Users-Delete\r\n    events:\r\n      - http:\r\n          method: delete\r\n          path: /users/{userId}\r\n          authorizer:\r\n            type: TOKEN\r\n            authorizerId:\r\n              Fn::ImportValue: MainAuthorizerId\r\n          cors:\r\n            origin: \"*\"\r\n            headers:\r\n              - Content-Type\r\n              - Authorization\r\n              - X-Api-Key\r\n              - X-Amz-Date\r\n              - X-Amz-Security-Token\r\n\r\nresources:\r\n  Resources:\r\n    UsersTable:\r\n      Type: AWS::DynamoDB::Table\r\n      Properties:\r\n        TableName: ${self:provider.environment.USERS_TABLE}\r\n        AttributeDefinitions:\r\n          - AttributeName: userId\r\n            AttributeType: S\r\n          - AttributeName: email\r\n            AttributeType: S\r\n        KeySchema:\r\n          - AttributeName: userId\r\n            KeyType: HASH\r\n        GlobalSecondaryIndexes:\r\n          - IndexName: EmailIndex\r\n            KeySchema:\r\n              - AttributeName: email\r\n                KeyType: HASH\r\n            Projection:\r\n              ProjectionType: ALL\r\n        BillingMode: PAY_PER_REQUEST",
+    "command": [
+      "deploy"
+    ],
+    "options": {
+      "stage": "local"
+    },
+    "orgId": "85843dfe-8437-481e-a36a-7fcee51ea4d6",
+    "orgName": "misaelsalazar980",
+    "userId": "vV5MVzVrcvQcDywTWY",
+    "userName": "misaelsalazar980",
+    "serviceProviderAwsAccountId": "000000000000",
+    "serviceProviderAwsCfStackName": "tallerusuarios-local",
+    "serviceProviderAwsCfStackId": "arn:aws:cloudformation:us-east-1:000000000000:stack/tallerusuarios-local/125b54fb-e904-4395-af6a-6ae0c5885606",
+    "serviceProviderAwsCfStackCreated": "2026-11-08T01:17:24.103Z",
+    "serviceProviderAwsCfStackUpdated": "2026-11-08T01:29:34.848Z",
+    "serviceProviderAwsCfStackStatus": "UPDATE_COMPLETE",
+    "serviceProviderAwsCfStackOutputs": [
+      {
+        "OutputKey": "DeleteUserLambdaFunctionQualifiedArn",
+        "OutputValue": "arn:aws:lambda:us-east-1:000000000000:function:taller-local-Users-Delete:1",
+        "ExportName": "sls-tallerusuarios-local-DeleteUserLambdaFunctionQualifiedArn"
+      },
+      {
+        "OutputKey": "GetUserLambdaFunctionQualifiedArn",
+        "OutputValue": "arn:aws:lambda:us-east-1:000000000000:function:taller-local-Users-GetUser:1",
+        "ExportName": "sls-tallerusuarios-local-GetUserLambdaFunctionQualifiedArn"
+      },
+      {
+        "OutputKey": "LoginLambdaFunctionQualifiedArn",
+        "OutputValue": "arn:aws:lambda:us-east-1:000000000000:function:taller-local-Users-Login:1",
+        "ExportName": "sls-tallerusuarios-local-LoginLambdaFunctionQualifiedArn"
+      },
+      {
+        "OutputKey": "RegisterLambdaFunctionQualifiedArn",
+        "OutputValue": "arn:aws:lambda:us-east-1:000000000000:function:taller-local-Users-Register:2",
+        "ExportName": "sls-tallerusuarios-local-RegisterLambdaFunctionQualifiedArn"
+      },
+      {
+        "OutputKey": "ServerlessDeploymentBucketName",
+        "OutputValue": "serverless-framework-deployments-us-east-1-2bbae8e1-e763",
+        "ExportName": "sls-tallerusuarios-local-ServerlessDeploymentBucketName"
+      },
+      {
+        "OutputKey": "ServiceEndpoint",
+        "OutputValue": "https://ygmwzwdtj6.execute-api.localhost.localstack.cloud:4566/local",
+        "ExportName": "sls-tallerusuarios-local-ServiceEndpoint"
+      },
+      {
+        "OutputKey": "UpdateUserLambdaFunctionQualifiedArn",
+        "OutputValue": "arn:aws:lambda:us-east-1:000000000000:function:taller-local-Users-Update:1",
+        "ExportName": "sls-tallerusuarios-local-UpdateUserLambdaFunctionQualifiedArn"
+      }
+    ],
+    "compiledCloudFormationTemplate": {
+      "AWSTemplateFormatVersion": "2010-09-09",
+      "Description": "The AWS CloudFormation template for this Serverless application",
+      "Resources": {
+        "RegisterLogGroup": {
+          "Type": "AWS::Logs::LogGroup",
+          "Properties": {
+            "LogGroupName": "/aws/lambda/taller-local-Users-Register"
+          }
+        },
+        "LoginLogGroup": {
+          "Type": "AWS::Logs::LogGroup",
+          "Properties": {
+            "LogGroupName": "/aws/lambda/taller-local-Users-Login"
+          }
+        },
+        "GetUserLogGroup": {
+          "Type": "AWS::Logs::LogGroup",
+          "Properties": {
+            "LogGroupName": "/aws/lambda/taller-local-Users-GetUser"
+          }
+        },
+        "UpdateUserLogGroup": {
+          "Type": "AWS::Logs::LogGroup",
+          "Properties": {
+            "LogGroupName": "/aws/lambda/taller-local-Users-Update"
+          }
+        },
+        "DeleteUserLogGroup": {
+          "Type": "AWS::Logs::LogGroup",
+          "Properties": {
+            "LogGroupName": "/aws/lambda/taller-local-Users-Delete"
+          }
+        },
+        "IamRoleLambdaExecution": {
+          "Type": "AWS::IAM::Role",
+          "Properties": {
+            "AssumeRolePolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Service": [
+                      "lambda.amazonaws.com"
+                    ]
+                  },
+                  "Action": [
+                    "sts:AssumeRole"
+                  ]
+                }
+              ]
+            },
+            "Policies": [
+              {
+                "PolicyName": {
+                  "Fn::Join": [
+                    "-",
+                    [
+                      "tallerusuarios",
+                      "local",
+                      "lambda"
+                    ]
+                  ]
+                },
+                "PolicyDocument": {
+                  "Version": "2012-10-17",
+                  "Statement": [
+                    {
+                      "Effect": "Allow",
+                      "Action": [
+                        "logs:CreateLogStream",
+                        "logs:CreateLogGroup",
+                        "logs:TagResource"
+                      ],
+                      "Resource": [
+                        {
+                          "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-local-Users-Register:*"
+                        },
+                        {
+                          "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-local-Users-Login:*"
+                        },
+                        {
+                          "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-local-Users-GetUser:*"
+                        },
+                        {
+                          "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-local-Users-Update:*"
+                        },
+                        {
+                          "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-local-Users-Delete:*"
+                        }
+                      ]
+                    },
+                    {
+                      "Effect": "Allow",
+                      "Action": [
+                        "logs:PutLogEvents"
+                      ],
+                      "Resource": [
+                        {
+                          "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-local-Users-Register:*:*"
+                        },
+                        {
+                          "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-local-Users-Login:*:*"
+                        },
+                        {
+                          "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-local-Users-GetUser:*:*"
+                        },
+                        {
+                          "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-local-Users-Update:*:*"
+                        },
+                        {
+                          "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/taller-local-Users-Delete:*:*"
+                        }
+                      ]
+                    },
+                    {
+                      "Effect": "Allow",
+                      "Action": [
+                        "dynamodb:PutItem",
+                        "dynamodb:GetItem",
+                        "dynamodb:UpdateItem",
+                        "dynamodb:DeleteItem",
+                        "dynamodb:Query",
+                        "dynamodb:Scan"
+                      ],
+                      "Resource": [
+                        {
+                          "Fn::GetAtt": [
+                            "UsersTable",
+                            "Arn"
+                          ]
+                        },
+                        {
+                          "Fn::Join": [
+                            "/",
+                            [
+                              {
+                                "Fn::GetAtt": [
+                                  "UsersTable",
+                                  "Arn"
+                                ]
+                              },
+                              "index/*"
+                            ]
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "Path": "/",
+            "RoleName": {
+              "Fn::Join": [
+                "-",
+                [
+                  "tallerusuarios",
+                  "local",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  "lambdaRole"
+                ]
+              ]
+            }
+          }
+        },
+        "RegisterLambdaFunction": {
+          "Type": "AWS::Lambda::Function",
+          "Properties": {
+            "Code": {
+              "S3Bucket": "serverless-framework-deployments-us-east-1-2bbae8e1-e763",
+              "S3Key": "serverless/tallerusuarios/local/1794101543117-2026-11-08T01:32:23.117Z/tallerusuarios.zip"
+            },
+            "Handler": "src/handlers/register.handler",
+            "Runtime": "nodejs22.x",
+            "FunctionName": "taller-local-Users-Register",
+            "MemorySize": 1024,
+            "Timeout": 6,
+            "Environment": {
+              "Variables": {
+                "STAGE": "local",
+                "USERS_TABLE": "taller-local-users",
+                "JWT_SECRET": "<REDACTED>",
+                "CORS_ORIGINS": "*",
+                "NODE_OPTIONS": "--enable-source-maps"
+              }
+            },
+            "Role": {
+              "Fn::GetAtt": [
+                "IamRoleLambdaExecution",
+                "Arn"
+              ]
+            }
+          },
+          "DependsOn": [
+            "RegisterLogGroup"
+          ]
+        },
+        "LoginLambdaFunction": {
+          "Type": "AWS::Lambda::Function",
+          "Properties": {
+            "Code": {
+              "S3Bucket": "serverless-framework-deployments-us-east-1-2bbae8e1-e763",
+              "S3Key": "serverless/tallerusuarios/local/1794101543117-2026-11-08T01:32:23.117Z/tallerusuarios.zip"
+            },
+            "Handler": "src/handlers/login.handler",
+            "Runtime": "nodejs22.x",
+            "FunctionName": "taller-local-Users-Login",
+            "MemorySize": 1024,
+            "Timeout": 6,
+            "Environment": {
+              "Variables": {
+                "STAGE": "local",
+                "USERS_TABLE": "taller-local-users",
+                "JWT_SECRET": "<REDACTED>",
+                "CORS_ORIGINS": "*",
+                "NODE_OPTIONS": "--enable-source-maps"
+              }
+            },
+            "Role": {
+              "Fn::GetAtt": [
+                "IamRoleLambdaExecution",
+                "Arn"
+              ]
+            }
+          },
+          "DependsOn": [
+            "LoginLogGroup"
+          ]
+        },
+        "GetUserLambdaFunction": {
+          "Type": "AWS::Lambda::Function",
+          "Properties": {
+            "Code": {
+              "S3Bucket": "serverless-framework-deployments-us-east-1-2bbae8e1-e763",
+              "S3Key": "serverless/tallerusuarios/local/1794101543117-2026-11-08T01:32:23.117Z/tallerusuarios.zip"
+            },
+            "Handler": "src/handlers/getUser.handler",
+            "Runtime": "nodejs22.x",
+            "FunctionName": "taller-local-Users-GetUser",
+            "MemorySize": 1024,
+            "Timeout": 6,
+            "Environment": {
+              "Variables": {
+                "STAGE": "local",
+                "USERS_TABLE": "taller-local-users",
+                "JWT_SECRET": "<REDACTED>",
+                "CORS_ORIGINS": "*",
+                "NODE_OPTIONS": "--enable-source-maps"
+              }
+            },
+            "Role": {
+              "Fn::GetAtt": [
+                "IamRoleLambdaExecution",
+                "Arn"
+              ]
+            }
+          },
+          "DependsOn": [
+            "GetUserLogGroup"
+          ]
+        },
+        "UpdateUserLambdaFunction": {
+          "Type": "AWS::Lambda::Function",
+          "Properties": {
+            "Code": {
+              "S3Bucket": "serverless-framework-deployments-us-east-1-2bbae8e1-e763",
+              "S3Key": "serverless/tallerusuarios/local/1794101543117-2026-11-08T01:32:23.117Z/tallerusuarios.zip"
+            },
+            "Handler": "src/handlers/updateUser.handler",
+            "Runtime": "nodejs22.x",
+            "FunctionName": "taller-local-Users-Update",
+            "MemorySize": 1024,
+            "Timeout": 6,
+            "Environment": {
+              "Variables": {
+                "STAGE": "local",
+                "USERS_TABLE": "taller-local-users",
+                "JWT_SECRET": "<REDACTED>",
+                "CORS_ORIGINS": "*",
+                "NODE_OPTIONS": "--enable-source-maps"
+              }
+            },
+            "Role": {
+              "Fn::GetAtt": [
+                "IamRoleLambdaExecution",
+                "Arn"
+              ]
+            }
+          },
+          "DependsOn": [
+            "UpdateUserLogGroup"
+          ]
+        },
+        "DeleteUserLambdaFunction": {
+          "Type": "AWS::Lambda::Function",
+          "Properties": {
+            "Code": {
+              "S3Bucket": "serverless-framework-deployments-us-east-1-2bbae8e1-e763",
+              "S3Key": "serverless/tallerusuarios/local/1794101543117-2026-11-08T01:32:23.117Z/tallerusuarios.zip"
+            },
+            "Handler": "src/handlers/deleteUser.handler",
+            "Runtime": "nodejs22.x",
+            "FunctionName": "taller-local-Users-Delete",
+            "MemorySize": 1024,
+            "Timeout": 6,
+            "Environment": {
+              "Variables": {
+                "STAGE": "local",
+                "USERS_TABLE": "taller-local-users",
+                "JWT_SECRET": "<REDACTED>",
+                "CORS_ORIGINS": "*",
+                "NODE_OPTIONS": "--enable-source-maps"
+              }
+            },
+            "Role": {
+              "Fn::GetAtt": [
+                "IamRoleLambdaExecution",
+                "Arn"
+              ]
+            }
+          },
+          "DependsOn": [
+            "DeleteUserLogGroup"
+          ]
+        },
+        "RegisterLambdaVersionLPd9XHAMt31q756J62wkmlBtvW7toqZVRppXIFDZ78": {
+          "Type": "AWS::Lambda::Version",
+          "DeletionPolicy": "Retain",
+          "Properties": {
+            "FunctionName": {
+              "Ref": "RegisterLambdaFunction"
+            },
+            "CodeSha256": "XIoxzqC/XxSRGfR6Uoa5RxmV+cVJ46EU6XI0JPDYTVw="
+          }
+        },
+        "LoginLambdaVersionrYMyMohWbZx47kAluCPzYUucMAmTqHDRyVcZGEAI": {
+          "Type": "AWS::Lambda::Version",
+          "DeletionPolicy": "Retain",
+          "Properties": {
+            "FunctionName": {
+              "Ref": "LoginLambdaFunction"
+            },
+            "CodeSha256": "XIoxzqC/XxSRGfR6Uoa5RxmV+cVJ46EU6XI0JPDYTVw="
+          }
+        },
+        "GetUserLambdaVersionbUsavsSAl6DrH84xGlBq5WGjP82TwkwkdUfvSnCWXY": {
+          "Type": "AWS::Lambda::Version",
+          "DeletionPolicy": "Retain",
+          "Properties": {
+            "FunctionName": {
+              "Ref": "GetUserLambdaFunction"
+            },
+            "CodeSha256": "XIoxzqC/XxSRGfR6Uoa5RxmV+cVJ46EU6XI0JPDYTVw="
+          }
+        },
+        "UpdateUserLambdaVersionF3tWEMP6hijeca1UpKtN2F8FGz0Tr8HeGTwYs6vn9c": {
+          "Type": "AWS::Lambda::Version",
+          "DeletionPolicy": "Retain",
+          "Properties": {
+            "FunctionName": {
+              "Ref": "UpdateUserLambdaFunction"
+            },
+            "CodeSha256": "XIoxzqC/XxSRGfR6Uoa5RxmV+cVJ46EU6XI0JPDYTVw="
+          }
+        },
+        "DeleteUserLambdaVersionegAVWlTm7pbkGxAqyE3i1sUks8Eas6zhB1xdNFnz4c": {
+          "Type": "AWS::Lambda::Version",
+          "DeletionPolicy": "Retain",
+          "Properties": {
+            "FunctionName": {
+              "Ref": "DeleteUserLambdaFunction"
+            },
+            "CodeSha256": "XIoxzqC/XxSRGfR6Uoa5RxmV+cVJ46EU6XI0JPDYTVw="
+          }
+        },
+        "ApiGatewayResourceUsers": {
+          "Type": "AWS::ApiGateway::Resource",
+          "Properties": {
+            "ParentId": {
+              "Fn::ImportValue": "MainRestApiRootResourceId"
+            },
+            "PathPart": "users",
+            "RestApiId": {
+              "Fn::ImportValue": "MainRestApiId"
+            }
+          }
+        },
+        "ApiGatewayResourceUsersRegister": {
+          "Type": "AWS::ApiGateway::Resource",
+          "Properties": {
+            "ParentId": {
+              "Ref": "ApiGatewayResourceUsers"
+            },
+            "PathPart": "register",
+            "RestApiId": {
+              "Fn::ImportValue": "MainRestApiId"
+            }
+          }
+        },
+        "ApiGatewayResourceUsersLogin": {
+          "Type": "AWS::ApiGateway::Resource",
+          "Properties": {
+            "ParentId": {
+              "Ref": "ApiGatewayResourceUsers"
+            },
+            "PathPart": "login",
+            "RestApiId": {
+              "Fn::ImportValue": "MainRestApiId"
+            }
+          }
+        },
+        "ApiGatewayResourceUsersUseridVar": {
+          "Type": "AWS::ApiGateway::Resource",
+          "Properties": {
+            "ParentId": {
+              "Ref": "ApiGatewayResourceUsers"
+            },
+            "PathPart": "{userId}",
+            "RestApiId": {
+              "Fn::ImportValue": "MainRestApiId"
+            }
+          }
+        },
+        "ApiGatewayMethodUsersRegisterOptions": {
+          "Type": "AWS::ApiGateway::Method",
+          "Properties": {
+            "AuthorizationType": "NONE",
+            "HttpMethod": "OPTIONS",
+            "MethodResponses": [
+              {
+                "StatusCode": "200",
+                "ResponseParameters": {
+                  "method.response.header.Access-Control-Allow-Origin": true,
+                  "method.response.header.Access-Control-Allow-Headers": true,
+                  "method.response.header.Access-Control-Allow-Methods": true
+                },
+                "ResponseModels": {}
+              }
+            ],
+            "RequestParameters": {},
+            "Integration": {
+              "Type": "MOCK",
+              "RequestTemplates": {
+                "application/json": "{statusCode:200}"
+              },
+              "ContentHandling": "CONVERT_TO_TEXT",
+              "IntegrationResponses": [
+                {
+                  "StatusCode": "200",
+                  "ResponseParameters": {
+                    "method.response.header.Access-Control-Allow-Origin": "'*'",
+                    "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Api-Key,X-Amz-Date,X-Amz-Security-Token'",
+                    "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,POST'"
+                  },
+                  "ResponseTemplates": {
+                    "application/json": ""
+                  }
+                }
+              ]
+            },
+            "ResourceId": {
+              "Ref": "ApiGatewayResourceUsersRegister"
+            },
+            "RestApiId": {
+              "Fn::ImportValue": "MainRestApiId"
+            }
+          }
+        },
+        "ApiGatewayMethodUsersLoginOptions": {
+          "Type": "AWS::ApiGateway::Method",
+          "Properties": {
+            "AuthorizationType": "NONE",
+            "HttpMethod": "OPTIONS",
+            "MethodResponses": [
+              {
+                "StatusCode": "200",
+                "ResponseParameters": {
+                  "method.response.header.Access-Control-Allow-Origin": true,
+                  "method.response.header.Access-Control-Allow-Headers": true,
+                  "method.response.header.Access-Control-Allow-Methods": true
+                },
+                "ResponseModels": {}
+              }
+            ],
+            "RequestParameters": {},
+            "Integration": {
+              "Type": "MOCK",
+              "RequestTemplates": {
+                "application/json": "{statusCode:200}"
+              },
+              "ContentHandling": "CONVERT_TO_TEXT",
+              "IntegrationResponses": [
+                {
+                  "StatusCode": "200",
+                  "ResponseParameters": {
+                    "method.response.header.Access-Control-Allow-Origin": "'*'",
+                    "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Api-Key,X-Amz-Date,X-Amz-Security-Token'",
+                    "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,POST'"
+                  },
+                  "ResponseTemplates": {
+                    "application/json": ""
+                  }
+                }
+              ]
+            },
+            "ResourceId": {
+              "Ref": "ApiGatewayResourceUsersLogin"
+            },
+            "RestApiId": {
+              "Fn::ImportValue": "MainRestApiId"
+            }
+          }
+        },
+        "ApiGatewayMethodUsersUseridVarOptions": {
+          "Type": "AWS::ApiGateway::Method",
+          "Properties": {
+            "AuthorizationType": "NONE",
+            "HttpMethod": "OPTIONS",
+            "MethodResponses": [
+              {
+                "StatusCode": "200",
+                "ResponseParameters": {
+                  "method.response.header.Access-Control-Allow-Origin": true,
+                  "method.response.header.Access-Control-Allow-Headers": true,
+                  "method.response.header.Access-Control-Allow-Methods": true
+                },
+                "ResponseModels": {}
+              }
+            ],
+            "RequestParameters": {},
+            "Integration": {
+              "Type": "MOCK",
+              "RequestTemplates": {
+                "application/json": "{statusCode:200}"
+              },
+              "ContentHandling": "CONVERT_TO_TEXT",
+              "IntegrationResponses": [
+                {
+                  "StatusCode": "200",
+                  "ResponseParameters": {
+                    "method.response.header.Access-Control-Allow-Origin": "'*'",
+                    "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization,X-Api-Key,X-Amz-Date,X-Amz-Security-Token'",
+                    "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,DELETE,PUT,GET'"
+                  },
+                  "ResponseTemplates": {
+                    "application/json": ""
+                  }
+                }
+              ]
+            },
+            "ResourceId": {
+              "Ref": "ApiGatewayResourceUsersUseridVar"
+            },
+            "RestApiId": {
+              "Fn::ImportValue": "MainRestApiId"
+            }
+          }
+        },
+        "ApiGatewayMethodUsersRegisterPost": {
+          "Type": "AWS::ApiGateway::Method",
+          "Properties": {
+            "HttpMethod": "POST",
+            "RequestParameters": {},
+            "ResourceId": {
+              "Ref": "ApiGatewayResourceUsersRegister"
+            },
+            "RestApiId": {
+              "Fn::ImportValue": "MainRestApiId"
+            },
+            "ApiKeyRequired": "<REDACTED>",
+            "AuthorizationType": "NONE",
+            "Integration": {
+              "IntegrationHttpMethod": "POST",
+              "Type": "AWS_PROXY",
+              "Uri": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":apigateway:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":lambda:path/2015-03-31/functions/",
+                    {
+                      "Fn::GetAtt": [
+                        "RegisterLambdaFunction",
+                        "Arn"
+                      ]
+                    },
+                    "/invocations"
+                  ]
+                ]
+              }
+            },
+            "MethodResponses": []
+          },
+          "DependsOn": [
+            "RegisterLambdaPermissionApiGateway"
+          ]
+        },
+        "ApiGatewayMethodUsersLoginPost": {
+          "Type": "AWS::ApiGateway::Method",
+          "Properties": {
+            "HttpMethod": "POST",
+            "RequestParameters": {},
+            "ResourceId": {
+              "Ref": "ApiGatewayResourceUsersLogin"
+            },
+            "RestApiId": {
+              "Fn::ImportValue": "MainRestApiId"
+            },
+            "ApiKeyRequired": "<REDACTED>",
+            "AuthorizationType": "NONE",
+            "Integration": {
+              "IntegrationHttpMethod": "POST",
+              "Type": "AWS_PROXY",
+              "Uri": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":apigateway:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":lambda:path/2015-03-31/functions/",
+                    {
+                      "Fn::GetAtt": [
+                        "LoginLambdaFunction",
+                        "Arn"
+                      ]
+                    },
+                    "/invocations"
+                  ]
+                ]
+              }
+            },
+            "MethodResponses": []
+          },
+          "DependsOn": [
+            "LoginLambdaPermissionApiGateway"
+          ]
+        },
+        "ApiGatewayMethodUsersUseridVarGet": {
+          "Type": "AWS::ApiGateway::Method",
+          "Properties": {
+            "HttpMethod": "GET",
+            "RequestParameters": {},
+            "ResourceId": {
+              "Ref": "ApiGatewayResourceUsersUseridVar"
+            },
+            "RestApiId": {
+              "Fn::ImportValue": "MainRestApiId"
+            },
+            "ApiKeyRequired": "<REDACTED>",
+            "AuthorizationType": "CUSTOM",
+            "AuthorizerId": {
+              "Fn::ImportValue": "MainAuthorizerId"
+            },
+            "Integration": {
+              "IntegrationHttpMethod": "POST",
+              "Type": "AWS_PROXY",
+              "Uri": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":apigateway:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":lambda:path/2015-03-31/functions/",
+                    {
+                      "Fn::GetAtt": [
+                        "GetUserLambdaFunction",
+                        "Arn"
+                      ]
+                    },
+                    "/invocations"
+                  ]
+                ]
+              }
+            },
+            "MethodResponses": []
+          },
+          "DependsOn": [
+            "GetUserLambdaPermissionApiGateway"
+          ]
+        },
+        "ApiGatewayMethodUsersUseridVarPut": {
+          "Type": "AWS::ApiGateway::Method",
+          "Properties": {
+            "HttpMethod": "PUT",
+            "RequestParameters": {},
+            "ResourceId": {
+              "Ref": "ApiGatewayResourceUsersUseridVar"
+            },
+            "RestApiId": {
+              "Fn::ImportValue": "MainRestApiId"
+            },
+            "ApiKeyRequired": "<REDACTED>",
+            "AuthorizationType": "CUSTOM",
+            "AuthorizerId": {
+              "Fn::ImportValue": "MainAuthorizerId"
+            },
+            "Integration": {
+              "IntegrationHttpMethod": "POST",
+              "Type": "AWS_PROXY",
+              "Uri": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":apigateway:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":lambda:path/2015-03-31/functions/",
+                    {
+                      "Fn::GetAtt": [
+                        "UpdateUserLambdaFunction",
+                        "Arn"
+                      ]
+                    },
+                    "/invocations"
+                  ]
+                ]
+              }
+            },
+            "MethodResponses": []
+          },
+          "DependsOn": [
+            "UpdateUserLambdaPermissionApiGateway"
+          ]
+        },
+        "ApiGatewayMethodUsersUseridVarDelete": {
+          "Type": "AWS::ApiGateway::Method",
+          "Properties": {
+            "HttpMethod": "DELETE",
+            "RequestParameters": {},
+            "ResourceId": {
+              "Ref": "ApiGatewayResourceUsersUseridVar"
+            },
+            "RestApiId": {
+              "Fn::ImportValue": "MainRestApiId"
+            },
+            "ApiKeyRequired": "<REDACTED>",
+            "AuthorizationType": "CUSTOM",
+            "AuthorizerId": {
+              "Fn::ImportValue": "MainAuthorizerId"
+            },
+            "Integration": {
+              "IntegrationHttpMethod": "POST",
+              "Type": "AWS_PROXY",
+              "Uri": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":apigateway:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":lambda:path/2015-03-31/functions/",
+                    {
+                      "Fn::GetAtt": [
+                        "DeleteUserLambdaFunction",
+                        "Arn"
+                      ]
+                    },
+                    "/invocations"
+                  ]
+                ]
+              }
+            },
+            "MethodResponses": []
+          },
+          "DependsOn": [
+            "DeleteUserLambdaPermissionApiGateway"
+          ]
+        },
+        "ApiGatewayDeployment1794101537340": {
+          "Type": "AWS::ApiGateway::Deployment",
+          "Properties": {
+            "RestApiId": {
+              "Fn::ImportValue": "MainRestApiId"
+            },
+            "StageName": "local"
+          },
+          "DependsOn": [
+            "ApiGatewayMethodUsersRegisterOptions",
+            "ApiGatewayMethodUsersLoginOptions",
+            "ApiGatewayMethodUsersUseridVarOptions",
+            "ApiGatewayMethodUsersRegisterPost",
+            "ApiGatewayMethodUsersLoginPost",
+            "ApiGatewayMethodUsersUseridVarGet",
+            "ApiGatewayMethodUsersUseridVarPut",
+            "ApiGatewayMethodUsersUseridVarDelete"
+          ]
+        },
+        "RegisterLambdaPermissionApiGateway": {
+          "Type": "AWS::Lambda::Permission",
+          "Properties": {
+            "FunctionName": {
+              "Fn::GetAtt": [
+                "RegisterLambdaFunction",
+                "Arn"
+              ]
+            },
+            "Action": "lambda:InvokeFunction",
+            "Principal": "apigateway.amazonaws.com",
+            "SourceArn": {
+              "Fn::Join": [
+                "",
+                [
+                  "arn:",
+                  {
+                    "Ref": "AWS::Partition"
+                  },
+                  ":execute-api:",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ":",
+                  {
+                    "Ref": "AWS::AccountId"
+                  },
+                  ":",
+                  {
+                    "Fn::ImportValue": "MainRestApiId"
+                  },
+                  "/*/*"
+                ]
+              ]
+            }
+          }
+        },
+        "LoginLambdaPermissionApiGateway": {
+          "Type": "AWS::Lambda::Permission",
+          "Properties": {
+            "FunctionName": {
+              "Fn::GetAtt": [
+                "LoginLambdaFunction",
+                "Arn"
+              ]
+            },
+            "Action": "lambda:InvokeFunction",
+            "Principal": "apigateway.amazonaws.com",
+            "SourceArn": {
+              "Fn::Join": [
+                "",
+                [
+                  "arn:",
+                  {
+                    "Ref": "AWS::Partition"
+                  },
+                  ":execute-api:",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ":",
+                  {
+                    "Ref": "AWS::AccountId"
+                  },
+                  ":",
+                  {
+                    "Fn::ImportValue": "MainRestApiId"
+                  },
+                  "/*/*"
+                ]
+              ]
+            }
+          }
+        },
+        "GetUserLambdaPermissionApiGateway": {
+          "Type": "AWS::Lambda::Permission",
+          "Properties": {
+            "FunctionName": {
+              "Fn::GetAtt": [
+                "GetUserLambdaFunction",
+                "Arn"
+              ]
+            },
+            "Action": "lambda:InvokeFunction",
+            "Principal": "apigateway.amazonaws.com",
+            "SourceArn": {
+              "Fn::Join": [
+                "",
+                [
+                  "arn:",
+                  {
+                    "Ref": "AWS::Partition"
+                  },
+                  ":execute-api:",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ":",
+                  {
+                    "Ref": "AWS::AccountId"
+                  },
+                  ":",
+                  {
+                    "Fn::ImportValue": "MainRestApiId"
+                  },
+                  "/*/*"
+                ]
+              ]
+            }
+          }
+        },
+        "UpdateUserLambdaPermissionApiGateway": {
+          "Type": "AWS::Lambda::Permission",
+          "Properties": {
+            "FunctionName": {
+              "Fn::GetAtt": [
+                "UpdateUserLambdaFunction",
+                "Arn"
+              ]
+            },
+            "Action": "lambda:InvokeFunction",
+            "Principal": "apigateway.amazonaws.com",
+            "SourceArn": {
+              "Fn::Join": [
+                "",
+                [
+                  "arn:",
+                  {
+                    "Ref": "AWS::Partition"
+                  },
+                  ":execute-api:",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ":",
+                  {
+                    "Ref": "AWS::AccountId"
+                  },
+                  ":",
+                  {
+                    "Fn::ImportValue": "MainRestApiId"
+                  },
+                  "/*/*"
+                ]
+              ]
+            }
+          }
+        },
+        "DeleteUserLambdaPermissionApiGateway": {
+          "Type": "AWS::Lambda::Permission",
+          "Properties": {
+            "FunctionName": {
+              "Fn::GetAtt": [
+                "DeleteUserLambdaFunction",
+                "Arn"
+              ]
+            },
+            "Action": "lambda:InvokeFunction",
+            "Principal": "apigateway.amazonaws.com",
+            "SourceArn": {
+              "Fn::Join": [
+                "",
+                [
+                  "arn:",
+                  {
+                    "Ref": "AWS::Partition"
+                  },
+                  ":execute-api:",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ":",
+                  {
+                    "Ref": "AWS::AccountId"
+                  },
+                  ":",
+                  {
+                    "Fn::ImportValue": "MainRestApiId"
+                  },
+                  "/*/*"
+                ]
+              ]
+            }
+          }
+        },
+        "UsersTable": {
+          "Type": "AWS::DynamoDB::Table",
+          "Properties": {
+            "TableName": "taller-local-users",
+            "AttributeDefinitions": [
+              {
+                "AttributeName": "userId",
+                "AttributeType": "S"
+              },
+              {
+                "AttributeName": "email",
+                "AttributeType": "S"
+              }
+            ],
+            "KeySchema": [
+              {
+                "AttributeName": "userId",
+                "KeyType": "HASH"
+              }
+            ],
+            "GlobalSecondaryIndexes": [
+              {
+                "IndexName": "EmailIndex",
+                "KeySchema": [
+                  {
+                    "AttributeName": "email",
+                    "KeyType": "HASH"
+                  }
+                ],
+                "Projection": {
+                  "ProjectionType": "ALL"
+                }
+              }
+            ],
+            "BillingMode": "PAY_PER_REQUEST"
+          }
+        }
+      },
+      "Outputs": {
+        "ServerlessDeploymentBucketName": {
+          "Value": "serverless-framework-deployments-us-east-1-2bbae8e1-e763",
+          "Export": {
+            "Name": "sls-tallerusuarios-local-ServerlessDeploymentBucketName"
+          }
+        },
+        "RegisterLambdaFunctionQualifiedArn": {
+          "Description": "Current Lambda function version",
+          "Value": {
+            "Ref": "RegisterLambdaVersionLPd9XHAMt31q756J62wkmlBtvW7toqZVRppXIFDZ78"
+          },
+          "Export": {
+            "Name": "sls-tallerusuarios-local-RegisterLambdaFunctionQualifiedArn"
+          }
+        },
+        "LoginLambdaFunctionQualifiedArn": {
+          "Description": "Current Lambda function version",
+          "Value": {
+            "Ref": "LoginLambdaVersionrYMyMohWbZx47kAluCPzYUucMAmTqHDRyVcZGEAI"
+          },
+          "Export": {
+            "Name": "sls-tallerusuarios-local-LoginLambdaFunctionQualifiedArn"
+          }
+        },
+        "GetUserLambdaFunctionQualifiedArn": {
+          "Description": "Current Lambda function version",
+          "Value": {
+            "Ref": "GetUserLambdaVersionbUsavsSAl6DrH84xGlBq5WGjP82TwkwkdUfvSnCWXY"
+          },
+          "Export": {
+            "Name": "sls-tallerusuarios-local-GetUserLambdaFunctionQualifiedArn"
+          }
+        },
+        "UpdateUserLambdaFunctionQualifiedArn": {
+          "Description": "Current Lambda function version",
+          "Value": {
+            "Ref": "UpdateUserLambdaVersionF3tWEMP6hijeca1UpKtN2F8FGz0Tr8HeGTwYs6vn9c"
+          },
+          "Export": {
+            "Name": "sls-tallerusuarios-local-UpdateUserLambdaFunctionQualifiedArn"
+          }
+        },
+        "DeleteUserLambdaFunctionQualifiedArn": {
+          "Description": "Current Lambda function version",
+          "Value": {
+            "Ref": "DeleteUserLambdaVersionegAVWlTm7pbkGxAqyE3i1sUks8Eas6zhB1xdNFnz4c"
+          },
+          "Export": {
+            "Name": "sls-tallerusuarios-local-DeleteUserLambdaFunctionQualifiedArn"
+          }
+        },
+        "ServiceEndpoint": {
+          "Description": "URL of the service endpoint",
+          "Value": {
+            "Fn::Join": [
+              "",
+              [
+                "https://",
+                {
+                  "Fn::ImportValue": "MainRestApiId"
+                },
+                ".execute-api.",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ".",
+                {
+                  "Ref": "AWS::URLSuffix"
+                },
+                "/local"
+              ]
+            ]
+          },
+          "Export": {
+            "Name": "sls-tallerusuarios-local-ServiceEndpoint"
+          }
+        }
+      }
+    }
+  }
+}

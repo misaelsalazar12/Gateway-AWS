@@ -1,0 +1,201 @@
+org: misaelsalazar980
+service: tallerproductos
+frameworkVersion: "4"
+
+provider:
+  name: aws
+  runtime: nodejs22.x
+  stage: ${opt:stage, 'local'}
+  region: us-east-1
+  environment:
+    STAGE: ${self:provider.stage}
+    PRODUCTS_TABLE: taller-${self:provider.stage}-products
+    CORS_ORIGINS: ${file(./config/config-${self:provider.stage}.json):CORS_ORIGINS}
+  apiGateway:
+    restApiId:
+      Fn::ImportValue: MainRestApiId
+    restApiRootResourceId:
+      Fn::ImportValue: MainRestApiRootResourceId
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:PutItem
+        - dynamodb:GetItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+        - dynamodb:Query
+        - dynamodb:Scan
+      Resource:
+        - Fn::GetAtt: [ProductsTable, Arn]
+        - Fn::Join:
+            - "/"
+            - - { Fn::GetAtt: [ProductsTable, Arn] }
+              - "index/*"
+
+plugins:
+  - serverless-localstack
+
+custom:
+  localstack:
+    stages:
+      - local
+    host: http://localhost
+    edgePort: 4566
+    autostart: false
+
+functions:
+  # 1. Crear producto
+  createProduct:
+    handler: src/handlers/createProduct.handler
+    name: taller-${self:provider.stage}-Products-Create
+    events:
+      - http:
+          method: post
+          path: /products
+          authorizer:
+            type: TOKEN
+            authorizerId:
+              Fn::ImportValue: MainAuthorizerId
+          cors:
+            origin: "*"
+            headers:
+              - Content-Type
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Date
+              - X-Amz-Security-Token
+
+  # 2. Lista de productos
+  listProducts:
+    handler: src/handlers/listProducts.handler
+    name: taller-${self:provider.stage}-Products-List
+    events:
+      - http:
+          method: get
+          path: /products
+          cors:
+            origin: "*"
+            headers:
+              - Content-Type
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Date
+              - X-Amz-Security-Token
+
+  # 3. Obtener producto
+  getProduct:
+    handler: src/handlers/getProduct.handler
+    name: taller-${self:provider.stage}-Products-Get
+    events:
+      - http:
+          method: get
+          path: /products/{productId}
+          cors:
+            origin: "*"
+            headers:
+              - Content-Type
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Date
+              - X-Amz-Security-Token
+
+  # 4. Actualizar producto
+  updateProduct:
+    handler: src/handlers/updateProduct.handler
+    name: taller-${self:provider.stage}-Products-Update
+    events:
+      - http:
+          method: put
+          path: /products/{productId}
+          authorizer:
+            type: TOKEN
+            authorizerId:
+              Fn::ImportValue: MainAuthorizerId
+          cors:
+            origin: "*"
+            headers:
+              - Content-Type
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Date
+              - X-Amz-Security-Token
+
+  # 5. Update de stock
+  updateStock:
+    handler: src/handlers/updateStock.handler
+    name: taller-${self:provider.stage}-Products-UpdateStock
+    events:
+      - http:
+          method: patch
+          path: /products/{productId}/stock
+          authorizer:
+            type: TOKEN
+            authorizerId:
+              Fn::ImportValue: MainAuthorizerId
+          cors:
+            origin: "*"
+            headers:
+              - Content-Type
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Date
+              - X-Amz-Security-Token
+      - http:
+          method: put
+          path: /products/{productId}/stock
+          authorizer:
+            type: TOKEN
+            authorizerId:
+              Fn::ImportValue: MainAuthorizerId
+          cors:
+            origin: "*"
+            headers:
+              - Content-Type
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Date
+              - X-Amz-Security-Token
+
+  # 6. Borrar producto
+  deleteProduct:
+    handler: src/handlers/deleteProduct.handler
+    name: taller-${self:provider.stage}-Products-Delete
+    events:
+      - http:
+          method: delete
+          path: /products/{productId}
+          authorizer:
+            type: TOKEN
+            authorizerId:
+              Fn::ImportValue: MainAuthorizerId
+          cors:
+            origin: "*"
+            headers:
+              - Content-Type
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Date
+              - X-Amz-Security-Token
+
+resources:
+  Resources:
+    ProductsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.PRODUCTS_TABLE}
+        AttributeDefinitions:
+          - AttributeName: productId
+            AttributeType: S
+          - AttributeName: category
+            AttributeType: S
+        KeySchema:
+          - AttributeName: productId
+            KeyType: HASH
+        GlobalSecondaryIndexes:
+          - IndexName: CategoryIndex
+            KeySchema:
+              - AttributeName: category
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+        BillingMode: PAY_PER_REQUEST

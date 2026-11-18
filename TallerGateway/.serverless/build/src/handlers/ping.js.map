@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../../src/handlers/ping.ts"],
+  "sourcesContent": ["import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';\r\n\r\nexport const handler = async (\r\n  event: APIGatewayProxyEvent\r\n): Promise<APIGatewayProxyResult> => {\r\n  return {\r\n    statusCode: 200,\r\n    headers: {\r\n      'Content-Type': 'application/json',\r\n      'Access-Control-Allow-Origin': process.env.CORS_ORIGINS || '*',\r\n    },\r\n    body: JSON.stringify({\r\n      message: 'Pong! Gateway funcionando correctamente',\r\n      stage: process.env.STAGE,\r\n      timestamp: new Date().toISOString(),\r\n    }),\r\n  };\r\n};"],
+  "mappings": ";;;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAEO,IAAM,UAAU,OACrB,UACmC;AACnC,SAAO;AAAA,IACL,YAAY;AAAA,IACZ,SAAS;AAAA,MACP,gBAAgB;AAAA,MAChB,+BAA+B,QAAQ,IAAI,gBAAgB;AAAA,IAC7D;AAAA,IACA,MAAM,KAAK,UAAU;AAAA,MACnB,SAAS;AAAA,MACT,OAAO,QAAQ,IAAI;AAAA,MACnB,YAAW,oBAAI,KAAK,GAAE,YAAY;AAAA,IACpC,CAAC;AAAA,EACH;AACF;",
+  "names": []
+}

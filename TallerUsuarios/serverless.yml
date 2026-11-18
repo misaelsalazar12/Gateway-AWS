@@ -1,0 +1,161 @@
+org: misaelsalazar980
+service: tallerusuarios
+frameworkVersion: "4"
+
+provider:
+  name: aws
+  runtime: nodejs22.x
+  stage: ${opt:stage, 'local'}
+  region: us-east-1
+  environment:
+    STAGE: ${self:provider.stage}
+    USERS_TABLE: taller-${self:provider.stage}-users
+    JWT_SECRET: ${ssm:/taller/${self:provider.stage}/jwt-secret}
+    CORS_ORIGINS: ${file(./config/config-${self:provider.stage}.json):CORS_ORIGINS}
+  apiGateway:
+    restApiId:
+      Fn::ImportValue: MainRestApiId
+    restApiRootResourceId:
+      Fn::ImportValue: MainRestApiRootResourceId
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:PutItem
+        - dynamodb:GetItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+        - dynamodb:Query
+        - dynamodb:Scan
+      Resource:
+        - Fn::GetAtt: [UsersTable, Arn]
+        - Fn::Join:
+            - "/"
+            - - { Fn::GetAtt: [UsersTable, Arn] }
+              - "index/*"
+
+plugins:
+  - serverless-localstack
+
+custom:
+  localstack:
+    stages:
+      - local
+    host: http://localhost
+    edgePort: 4566
+    autostart: false
+
+functions:
+  register:
+    handler: src/handlers/register.handler
+    name: taller-${self:provider.stage}-Users-Register
+    events:
+      - http:
+          method: post
+          path: /users/register
+          cors:
+            origin: "*"
+            headers:
+              - Content-Type
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Date
+              - X-Amz-Security-Token
+
+  login:
+    handler: src/handlers/login.handler
+    name: taller-${self:provider.stage}-Users-Login
+    events:
+      - http:
+          method: post
+          path: /users/login
+          cors:
+            origin: "*"
+            headers:
+              - Content-Type
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Date
+              - X-Amz-Security-Token
+
+  getUser:
+    handler: src/handlers/getUser.handler
+    name: taller-${self:provider.stage}-Users-GetUser
+    events:
+      - http:
+          method: get
+          path: /users/{userId}
+          authorizer:
+            type: TOKEN
+            authorizerId:
+              Fn::ImportValue: MainAuthorizerId
+          cors:
+            origin: "*"
+            headers:
+              - Content-Type
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Date
+              - X-Amz-Security-Token
+
+  updateUser:
+    handler: src/handlers/updateUser.handler
+    name: taller-${self:provider.stage}-Users-Update
+    events:
+      - http:
+          method: put
+          path: /users/{userId}
+          authorizer:
+            type: TOKEN
+            authorizerId:
+              Fn::ImportValue: MainAuthorizerId
+          cors:
+            origin: "*"
+            headers:
+              - Content-Type
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Date
+              - X-Amz-Security-Token
+
+  deleteUser:
+    handler: src/handlers/deleteUser.handler
+    name: taller-${self:provider.stage}-Users-Delete
+    events:
+      - http:
+          method: delete
+          path: /users/{userId}
+          authorizer:
+            type: TOKEN
+            authorizerId:
+              Fn::ImportValue: MainAuthorizerId
+          cors:
+            origin: "*"
+            headers:
+              - Content-Type
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Date
+              - X-Amz-Security-Token
+
+resources:
+  Resources:
+    UsersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.USERS_TABLE}
+        AttributeDefinitions:
+          - AttributeName: userId
+            AttributeType: S
+          - AttributeName: email
+            AttributeType: S
+        KeySchema:
+          - AttributeName: userId
+            KeyType: HASH
+        GlobalSecondaryIndexes:
+          - IndexName: EmailIndex
+            KeySchema:
+              - AttributeName: email
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+        BillingMode: PAY_PER_REQUEST
